@@ -1,0 +1,120 @@
+---
+title: "Authentifier vos requêtes sur l'API DNPEC Collecte"
+sidebarTitle: "Authentification"
+description: "Obtenez un token JWT via l'authentification email/mot de passe et passez-le dans l'en-tête Authorization de chaque requête à l'API DNPEC Collecte."
+---
+
+L'API DNPEC Collecte utilise l'authentification par token JWT (JSON Web Token) émis par Supabase Auth. Chaque requête doit transmettre ce token dans l'en-tête HTTP `Authorization` sous la forme `Bearer <token>`. Le serveur valide le token à chaque appel, résout votre identité et applique les règles de sécurité (Row Level Security) correspondant à votre rôle. Aucune session côté serveur n'est maintenue : le token est la seule preuve d'identité.
+
+<Warning>
+  Ne stockez jamais votre token dans le code source ou dans une URL. Utilisez des variables d'environnement ou un gestionnaire de secrets (ex. : HashiCorp Vault, AWS Secrets Manager, un fichier `.env` exclu du contrôle de version).
+</Warning>
+
+## Obtenir un token
+
+Pour obtenir un token d'accès, authentifiez-vous auprès de l'endpoint Supabase Auth en fournissant votre adresse email et votre mot de passe. Vous avez besoin de deux éléments fournis par l'équipe DNPEC lors de votre onboarding : l'URL de votre projet Supabase et votre clé publique (`anon key`).
+
+```bash
+curl -X POST 'https://votre-projet.supabase.co/auth/v1/token?grant_type=password' \
+  -H 'apikey: VOTRE_CLE_PUBLIQUE' \
+  -H 'Content-Type: application/json' \
+  -d '{"email": "vous@exemple.com", "password": "votre_mot_de_passe"}'
+```
+
+En cas de succès, Supabase Auth retourne un objet JSON contenant votre token d'accès, sa durée de vie et un token de renouvellement :
+
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "bearer",
+  "expires_in": 3600,
+  "refresh_token": "..."
+}
+```
+
+<Info>
+  Le champ `expires_in` est exprimé en secondes. Une valeur de `3600` signifie que votre token est valide pendant **1 heure** à compter de sa délivrance. Planifiez le renouvellement avant l'expiration pour éviter toute interruption de service.
+</Info>
+
+## Utiliser le token
+
+Une fois le token obtenu, passez-le dans l'en-tête `Authorization` de chaque requête à l'API DNPEC Collecte. Le préfixe `Bearer` (avec une majuscule et un espace) est obligatoire.
+
+```bash
+curl https://votre-domaine/api/v1/campaigns \
+  -H 'Authorization: Bearer VOTRE_ACCESS_TOKEN'
+```
+
+Voici comment intégrer ce mécanisme dans les environnements les plus courants :
+
+<Tabs>
+  <Tab title="cURL">
+    ```bash
+    # Stockez le token dans une variable d'environnement
+    export DNPEC_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+    curl https://votre-domaine/api/v1/submissions \
+      -H "Authorization: Bearer $DNPEC_TOKEN"
+    ```
+  </Tab>
+  <Tab title="JavaScript (fetch)">
+    ```javascript
+    const response = await fetch('https://votre-domaine/api/v1/campaigns', {
+      headers: {
+        'Authorization': `Bearer ${process.env.DNPEC_ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+    ```
+  </Tab>
+  <Tab title="Python (requests)">
+    ```python
+    import os
+    import requests
+
+    headers = {
+        "Authorization": f"Bearer {os.environ['DNPEC_ACCESS_TOKEN']}",
+        "Content-Type": "application/json",
+    }
+
+    response = requests.get(
+        "https://votre-domaine/api/v1/campaigns",
+        headers=headers,
+    )
+    data = response.json()
+    ```
+  </Tab>
+</Tabs>
+
+## Renouveler le token
+
+Les tokens d'accès expirent après **1 heure**. Pour continuer à appeler l'API sans redemander les identifiants de l'utilisateur, utilisez le `refresh_token` retourné lors de l'authentification initiale. Le refresh token a une durée de vie plus longue et permet d'obtenir un nouveau `access_token` de manière transparente.
+
+```bash
+curl -X POST 'https://votre-projet.supabase.co/auth/v1/token?grant_type=refresh_token' \
+  -H 'apikey: VOTRE_CLE_PUBLIQUE' \
+  -H 'Content-Type: application/json' \
+  -d '{"refresh_token": "VOTRE_REFRESH_TOKEN"}'
+```
+
+La réponse est identique à celle de l'authentification initiale : vous obtenez un nouveau `access_token` et un nouveau `refresh_token`. Remplacez les valeurs en mémoire ou en variables d'environnement par les nouvelles valeurs avant de poursuivre vos appels.
+
+<Tip>
+  Implémentez un intercepteur HTTP dans votre client pour détecter automatiquement les réponses `401` avec le code `unauthorized` et déclencher le renouvellement du token avant de relancer la requête échouée. Cela évite toute interruption visible pour l'utilisateur final.
+</Tip>
+
+## Erreurs d'authentification
+
+Le tableau suivant récapitule les codes HTTP liés à l'authentification et les actions à entreprendre pour les résoudre.
+
+| Code HTTP | Signification                          | Action                                                     |
+|-----------|----------------------------------------|------------------------------------------------------------|
+| `401`     | Token absent ou invalide               | Vérifiez que l'en-tête `Authorization` est bien présent et correctement formaté (`Bearer <token>`) |
+| `401`     | Token expiré                           | Renouvelez le token avec votre `refresh_token` via l'endpoint `/auth/v1/token?grant_type=refresh_token` |
+| `403`     | Accès refusé par les permissions       | Vérifiez votre rôle auprès de l'administrateur DNPEC ; certaines actions sont réservées aux analystes ou super admins |
+
+<Note>
+  Les données retournées par l'API sont filtrées automatiquement selon votre rôle et vos permissions. Un compte entreprise ne verra que ses propres soumissions et les campagnes qui lui ont été affectées — jamais les données d'une autre organisation.
+</Note>

@@ -1,0 +1,84 @@
+---
+title: "Répondre aux campagnes de collecte sur DNPEC Collecte"
+sidebarTitle: "Campagnes"
+description: "Consultez les campagnes de collecte qui vous sont adressées, remplissez les formulaires sectoriels et soumettez vos données économiques à la DNPEC."
+---
+
+Les campagnes de collecte constituent le principal mécanisme par lequel la DNPEC recueille les données économiques auprès de votre entité. Chaque campagne vous est adressée personnellement selon votre secteur d'activité et votre type de déclarant. Vous devez remplir le formulaire associé et le soumettre avant la date de clôture indiquée.
+
+## Voir vos campagnes
+
+Accédez à `/portail/campagnes` pour consulter l'ensemble des campagnes qui vous ont été assignées. La page distingue deux sections : les **campagnes actives** (ouvertes, en attente de votre réponse) et l'**historique** (campagnes clôturées ou archivées).
+
+Pour chaque campagne, les informations suivantes sont affichées :
+
+| Information | Description |
+|---|---|
+| **Titre** | Nom officiel de la campagne de collecte |
+| **Période de référence** | Période couverte par la collecte, par exemple « Janvier 2025 » ou « T3 2024 » |
+| **Périodicité** | Mensuelle, Trimestrielle, Annuelle ou Ponctuelle |
+| **Date de clôture** | Date limite de soumission de votre formulaire |
+| **Statut de votre soumission** | Badge indiquant l'état de votre réponse à cette campagne |
+
+Les campagnes dont la clôture approche dans moins de 3 jours sont signalées par un badge d'urgence **J-N** ou **Dernier jour** pour vous alerter.
+
+## Remplir et soumettre un formulaire
+
+<Steps>
+  <Step title="Cliquez sur une campagne active">
+    Depuis la liste des campagnes, cliquez sur la campagne à laquelle vous souhaitez répondre, ou utilisez le bouton **Répondre** affiché directement sur la bannière du tableau de bord. Vous accédez ainsi à la page de détail de la campagne et à son formulaire sectoriel.
+  </Step>
+
+  <Step title="Remplissez les champs du formulaire sectoriel">
+    Complétez les champs du formulaire de collecte. Les champs proposés varient selon votre secteur d'activité et votre type de déclarant (entreprise sectorielle, BSD ou SPD). Les champs obligatoires sont signalés et doivent être renseignés avant toute soumission définitive.
+  </Step>
+
+  <Step title="Joignez les pièces justificatives si demandé">
+    Certains formulaires requièrent des pièces justificatives (états financiers, tableaux statistiques, etc.). Si votre formulaire comporte une section de pièces jointes, téléversez les documents demandés dans les formats acceptés.
+  </Step>
+
+  <Step title="Sauvegardez en brouillon ou soumettez">
+    Vous avez deux options :
+    - **Sauvegarder en brouillon** : enregistre votre progression sans envoyer la déclaration à la DNPEC. Vous pouvez revenir la compléter ultérieurement.
+    - **Soumettre** : envoie définitivement votre déclaration à la DNPEC. Le statut de la soumission passe à **Soumise**.
+  </Step>
+</Steps>
+
+## Suivi de vos soumissions
+
+Une fois votre formulaire soumis, il suit un parcours de traitement par la DNPEC. Le schéma ci-dessous illustre les transitions de statut possibles :
+
+**Brouillon** → **Soumise** → **Validée**
+
+**Soumise** → **Rejetée** *(fin du traitement)*
+
+**Soumise** → **Correction demandée** → *(vous corrigez)* → **Soumise** → **Validée**
+
+Consultez l'état de chacune de vos soumissions depuis `/portail/campagnes` ou depuis la section **Activité récente** de votre tableau de bord.
+
+## Correction demandée
+
+Lorsque la DNPEC estime qu'un ou plusieurs champs de votre déclaration nécessitent une révision, elle place votre soumission au statut **Correction demandée** et vous envoie une notification accompagnée d'un commentaire précisant les points à corriger.
+
+Pour répondre à une demande de correction :
+
+1. Accédez à la campagne concernée depuis `/portail/campagnes`.
+2. Lisez attentivement le commentaire de correction affiché en haut du formulaire.
+3. Modifiez les champs signalés.
+4. Cliquez à nouveau sur **Soumettre** pour renvoyer votre déclaration corrigée à la DNPEC.
+
+## Délais de réponse
+
+Chaque campagne dispose d'une **date de clôture** (date limite) au-delà de laquelle il n'est plus possible de soumettre ou modifier une réponse. La date de clôture est affichée sur la carte de la campagne et en haut du formulaire. Une fois la campagne clôturée, son statut passe à **Clôturée** et le formulaire devient accessible en lecture seule uniquement.
+
+<Info>
+  Consultez régulièrement la page `/portail/campagnes` pour ne pas manquer l'ouverture d'une nouvelle campagne. Vous recevez également une notification automatique à chaque ouverture de campagne vous ciblant.
+</Info>
+
+<Note>
+  Vous pouvez sauvegarder votre formulaire comme brouillon autant de fois que nécessaire avant de le soumettre définitivement. Votre progression est conservée entre chaque session, vous pouvez donc compléter le formulaire en plusieurs fois.
+</Note>
+
+<Warning>
+  Une fois votre soumission envoyée à la DNPEC, vous ne pouvez plus la modifier par vous-même. Seule une demande de correction émise par la DNPEC vous permet de rouvrir la saisie. Assurez-vous que toutes vos données sont correctes et complètes avant de cliquer sur **Soumettre**.
+</Warning>

@@ -1,0 +1,67 @@
+---
+title: "Tableau de bord Direction DNPEC Collecte"
+sidebarTitle: "Tableau de Bord"
+description: "Le tableau de bord Direction centralise les KPIs de collecte, les campagnes actives, les soumissions à valider et l'activité récente de la plateforme."
+---
+
+Le tableau de bord Direction est le poste de commande central de DNPEC Collecte. Dès votre connexion, il vous offre une vue synthétique et en temps réel de l'état du répertoire d'entreprises, des campagnes en cours, des soumissions en attente de validation et des alertes analytiques. Toutes les informations critiques sont regroupées en un seul écran pour que vous puissiez identifier immédiatement les actions prioritaires et naviguer vers les modules concernés.
+
+## Indicateurs clés
+
+Quatre cartes KPI s'affichent en haut du tableau de bord et résument l'essentiel de l'activité de collecte. Chaque carte est cliquable et vous redirige directement vers le module correspondant.
+
+<CardGroup cols={2}>
+  <Card title="Entreprises validées" icon="building-2" href="/direction/gestion-entreprises">
+    Nombre total d'entreprises dont le dossier a été validé et qui participent activement aux campagnes de collecte. Cliquez pour accéder au répertoire complet.
+  </Card>
+  <Card title="Inscriptions en attente" icon="clock" href="/direction/gestion-entreprises">
+    Nombre de dossiers d'inscription reçus et en attente de traitement par la Direction. Un badge **À traiter** s'affiche dès qu'au moins un dossier est en file. Cliquez pour traiter les inscriptions.
+  </Card>
+  <Card title="Soumissions à valider" icon="check-square" href="/direction/validations">
+    Nombre de soumissions au statut **Soumise** en attente d'examen par un analyste. Un badge **Urgent** vous signale que des déclarations d'entreprises n'ont pas encore été traitées.
+  </Card>
+  <Card title="Campagnes actives" icon="megaphone" href="/direction/campagnes">
+    Nombre de campagnes dont le statut est **Active** à la date du jour. La carte affiche également le nombre de campagnes planifiées et une barre de progression du taux de validation global.
+  </Card>
+</CardGroup>
+
+## Graphiques d'activité
+
+Sous les KPI, deux graphiques vous donnent une lecture visuelle de l'activité de collecte sur la période récente.
+
+**Activité mensuelle** — Un graphique en barres affiche le volume de soumissions reçues mois par mois (soumises, validées, en correction, rejetées). Il vous permet de repérer les pics de collecte et les périodes creuses. Survolez une barre pour voir le détail des statuts.
+
+**Soumissions par secteur** — Un graphique en secteurs (donut) répartit les soumissions enregistrées selon le secteur économique (Mines, Finances, Commerce, Industrie, Énergie, etc.). Utilisez cette vue pour identifier les secteurs dont la couverture est insuffisante ou ceux qui concentrent le plus d'activité.
+
+À droite du graphique sectoriel, une carte **Statuts** récapitule le nombre total de soumissions par statut (Validées, Soumises, Correction demandée, Rejetées, Brouillons) avec un code couleur intuitif.
+
+## Alertes analytiques
+
+Lorsque le moteur d'analyses détecte des problèmes de qualité sur les données collectées — couverture insuffisante, variation sectorielle anormale, données manquantes — une bannière d'alerte apparaît automatiquement sous les KPI.
+
+<Note>
+  Les alertes analytiques sont calculées en temps réel à l'ouverture du tableau de bord. Cliquez sur **Voir dans Analyses** pour consulter le détail des alertes et prendre les mesures correctives appropriées dans le module `/direction/analyses/alertes`.
+</Note>
+
+## Campagnes en cours
+
+Le panneau **Campagnes en cours** liste jusqu'à trois campagnes actuellement actives, triées par date de clôture croissante (les plus urgentes en premier). Pour chaque campagne, vous visualisez :
+
+- le titre et le secteur concerné ;
+- la période de référence et la date de clôture ;
+- le nombre de cibles totales, de soumissions validées et de soumissions en attente de validation ;
+- une barre de progression du taux de collecte.
+
+Cliquez sur une campagne pour accéder à sa fiche détaillée dans `/direction/campagnes/[id]`.
+
+## Activité récente
+
+La section **Activité récente** affiche un journal des dernières actions enregistrées sur la plateforme : création d'entreprises, modification de campagnes, validation de soumissions, publication de formulaires, etc. Chaque entrée indique l'auteur de l'action, le type d'opération et l'heure relative.
+
+<Note>
+  L'onglet **Activité récente** est réservé au super administrateur. Les analystes ne voient pas cette section sur leur tableau de bord.
+</Note>
+
+## Actions rapides
+
+Dans la colonne de droite du tableau de bord, le panneau **Actions rapides** vous permet de créer une nouvelle campagne directement (mensuelle, ponctuelle ou régionale) et d'ouvrir le **Calendrier de collecte** pour visualiser toutes les campagnes planifiées sur l'année en cours.

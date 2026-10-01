@@ -1,0 +1,51 @@
+---
+title: "Tableau de bord du Portail Entreprise DNPEC Collecte"
+sidebarTitle: "Tableau de Bord"
+description: "Naviguez dans votre espace déclarant DNPEC Collecte : KPIs, campagnes actives, historique des soumissions et notifications en un seul écran."
+---
+
+Le tableau de bord, accessible à l'adresse `/portail/dashboard`, est votre point d'entrée sur le portail déclarant DNPEC Collecte. Il vous offre une vue synthétique de votre activité déclarative : campagnes en cours, état de vos soumissions, notifications récentes et historique d'activité. Il n'est accessible qu'après la validation de votre compte par la DNPEC.
+
+## Indicateurs clés
+
+En haut du tableau de bord, trois cartes d'indicateurs vous donnent un aperçu instantané de votre situation déclarative.
+
+<CardGroup cols={3}>
+  <Card title="Campagnes actives" icon="megaphone">
+    Nombre de campagnes de collecte ouvertes pour lesquelles votre entité a été désignée comme déclarante. Cliquez sur la carte pour accéder directement à la liste de vos campagnes.
+  </Card>
+  <Card title="Soumissions en attente" icon="clock">
+    Nombre de soumissions que vous avez envoyées à la DNPEC et qui sont encore en cours d'examen (statut **Soumise**) ou pour lesquelles une correction vous a été demandée (statut **Correction demandée**).
+  </Card>
+  <Card title="Soumissions validées" icon="check-square">
+    Nombre de soumissions que la DNPEC a officiellement acceptées. Ces déclarations sont définitivement enregistrées dans le système de collecte.
+  </Card>
+</CardGroup>
+
+## Campagne à traiter
+
+Si au moins une campagne active vous est assignée, le tableau de bord affiche une bannière mise en évidence présentant la prochaine campagne prioritaire. Cette bannière indique le titre de la campagne, sa date de clôture et un bouton **Répondre** qui vous dirige directement vers le formulaire de saisie. Si vous avez déjà soumis une réponse, le bouton devient **Voir la réponse**.
+
+## Notifications récentes
+
+La section **Notifications récentes** affiche les 4 dernières notifications générées par la DNPEC pour votre compte : confirmations de réception, demandes de correction, validations ou communications. Les notifications non lues sont signalées par un point bleu à gauche de l'entrée. Cliquez sur **Voir tout** pour accéder à la liste complète dans [/portail/notifications](/portail/notifications).
+
+## Activité récente
+
+La section **Activité récente** liste vos 5 dernières soumissions, quelle que soit leur campagne d'origine. Pour chaque soumission, vous voyez le titre de la campagne concernée, la date de soumission et un badge de statut coloré. Cette section vous permet de suivre l'avancement de vos déclarations en un coup d'œil sans avoir à naviguer dans la liste complète des campagnes.
+
+## Statuts des soumissions
+
+Les badges de statut apparaissent à côté de chaque soumission dans le tableau de bord et sur les pages de campagne. Voici leur signification :
+
+| Badge | Signification |
+|---|---|
+| **Brouillon** | Le formulaire a été sauvegardé mais n'a pas encore été envoyé à la DNPEC. Vous pouvez continuer à le modifier. |
+| **Soumise** | La déclaration a été envoyée à la DNPEC et est en attente d'examen. Vous ne pouvez plus la modifier. |
+| **Validée** | La DNPEC a accepté votre déclaration. Elle est définitivement enregistrée. |
+| **Rejetée** | La DNPEC a refusé votre déclaration. Un motif est joint à la notification de rejet. |
+| **Correction demandée** | La DNPEC vous demande de modifier certains champs avant de resoumettre votre déclaration. |
+
+<Tip>
+  Cliquez sur **Voir tout** dans chaque section du tableau de bord pour accéder à la liste complète des campagnes, notifications ou soumissions correspondantes. Vous pouvez également naviguer directement depuis les cartes d'indicateurs en haut de page.
+</Tip>

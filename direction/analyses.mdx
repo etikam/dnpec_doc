@@ -1,0 +1,124 @@
+---
+title: "Analyses et notes de conjoncture sur DNPEC Collecte"
+sidebarTitle: "Analyses"
+description: "Accédez aux tableaux statistiques, au contrôle qualité des données, aux rapports de conjoncture et à l'assistant IA d'analyse économique."
+---
+
+Le module **Analyses**, accessible via `/direction/analyses`, constitue le cœur analytique de DNPEC Collecte. C'est depuis cet espace que vous explorez les indicateurs économiques collectés, vérifiez la qualité des données soumises, rédigez et publiez des notes de conjoncture, et interrogez un assistant IA fondé sur les données validées. Ce module est réservé aux profils **analyste** et **super admin**.
+
+## Les quatre onglets
+
+Le module Analyses s'organise en quatre onglets complémentaires. Chacun répond à un besoin distinct du cycle d'analyse.
+
+<CardGroup cols={2}>
+  <Card title="Analyse statistique" icon="chart-bar">
+    Visualisez les indicateurs économiques (chiffre d'affaires, emploi, investissements, etc.) par secteur et par période. Consultez les graphiques d'évolution, comparez les performances régionales et explorez la répartition des soumissions validées sur la période sélectionnée.
+  </Card>
+  <Card title="Contrôle qualité" icon="shield-check">
+    Lancez un scan automatique pour détecter les anomalies dans les données collectées : valeurs aberrantes, doublons, réponses manquantes et incohérences entre champs déclarés. Chaque anomalie est classée par niveau de sévérité et peut être traitée ou ignorée individuellement.
+  </Card>
+  <Card title="Rapports" icon="file-lines">
+    Créez, révisez et publiez des notes de conjoncture sectorielles ou nationales. Le studio de rédaction vous permet d'éditer chaque section du rapport, de suivre le cycle de révision (brouillon → relu → publié) et de consulter l'historique des versions.
+  </Card>
+  <Card title="Assistant IA" icon="robot">
+    Générez automatiquement une note de conjoncture à partir d'un instantané des données validées, ou posez des questions analytiques en langage naturel. L'assistant s'appuie sur OpenAI et dispose d'un mode de repli par modèle de gabarit lorsque la clé API n'est pas configurée.
+  </Card>
+</CardGroup>
+
+## Filtres disponibles
+
+Avant d'explorer les données, affinez votre périmètre d'analyse grâce aux filtres disponibles en haut de page. Ces filtres s'appliquent à tous les onglets.
+
+| Filtre | Description |
+|---|---|
+| **Secteur** | Limitez l'analyse à un ou plusieurs secteurs économiques (Mines, Agriculture, Commerce, etc.). Laissez vide pour une vue multi-sectorielle. |
+| **Année / Mois** | Sélectionnez la période de référence. La plateforme propose les périodes pour lesquelles des données validées existent. |
+| **Campagne** | Filtrez par campagne de collecte si plusieurs campagnes couvrent la même période. |
+| **Région** | Restreignez l'analyse à une région administrative de Guinée. |
+
+<Tip>
+  Combinez le filtre **Secteur** et le filtre **Région** pour produire des analyses localisées par secteur, utiles à la rédaction de notes de conjoncture régionales.
+</Tip>
+
+## Contrôle qualité
+
+L'onglet **Contrôle qualité** vous permet d'identifier et de traiter les anomalies dans les données collectées avant de publier un rapport officiel.
+
+### Scan automatique
+
+Le scan qualité se déclenche automatiquement à l'ouverture de l'onglet Contrôle qualité pour la période et le périmètre sélectionnés. Vous pouvez également relancer le scan manuellement en cliquant sur **Actualiser le scan**.
+
+### Types d'anomalies détectées
+
+Le moteur de contrôle qualité détecte quatre catégories d'anomalies :
+
+<Accordion title="Valeurs aberrantes (outliers ±3σ)">
+  Une valeur déclarée par une entreprise s'écarte de plus de trois écarts-types par rapport à la moyenne du secteur sur la période. Ces écarts peuvent indiquer une erreur de saisie ou un événement exceptionnel à vérifier auprès de l'entreprise.
+</Accordion>
+
+<Accordion title="Doublons">
+  Plusieurs soumissions d'une même entreprise pour le même indicateur et la même période ont été détectées. Seule la soumission validée la plus récente devrait subsister.
+</Accordion>
+
+<Accordion title="Réponses manquantes">
+  Un champ obligatoire d'une soumission validée ne contient aucune valeur, ce qui peut fausser les agrégats sectoriels.
+</Accordion>
+
+<Accordion title="Incohérences inter-champs">
+  La valeur d'un champ est incompatible avec celle d'un autre champ de la même soumission (par exemple, des effectifs salariés positifs associés à un chiffre d'affaires nul).
+</Accordion>
+
+### Niveaux de sévérité
+
+Chaque anomalie est associée à l'un des trois niveaux de sévérité suivants :
+
+| Niveau | Signification |
+|---|---|
+| **Info** | Anomalie mineure à surveiller, sans impact bloquant sur la publication. |
+| **Avertissement** | Anomalie significative recommandant une vérification avant publication. |
+| **Critique** | Anomalie grave bloquant la publication du rapport si elle n'est pas traitée. |
+
+### Traitement des anomalies
+
+Pour chaque anomalie listée, vous disposez de deux actions :
+
+- **Traiter** : marque l'anomalie comme prise en charge (`acknowledged`) — vous avez vérifié et accepté la valeur.
+- **Ignorer** : écarte l'anomalie de la liste active (`dismissed`) — elle ne bloquera plus la publication.
+
+<Warning>
+  La publication d'un rapport est bloquée si des anomalies **critiques** non traitées existent sur la période couverte par ce rapport. Traitez ou ignorez toutes les anomalies critiques avant de soumettre le rapport à la publication.
+</Warning>
+
+## Alertes analytiques
+
+Le moteur d'alertes analytiques analyse automatiquement les données de la période sélectionnée et génère des signaux d'alerte selon des règles déterministes. Ces alertes vous informent de situations qui méritent une attention particulière dans votre analyse de conjoncture.
+
+### Types d'alertes
+
+<Tabs>
+  <Tab title="Couverture insuffisante">
+    **Couverture < 70 %** — Moins de 70 % des entreprises attendues dans un secteur ont soumis leurs données pour la période. L'analyse sectorielle repose sur un échantillon trop restreint pour être statistiquement représentative.
+  </Tab>
+  <Tab title="Absence de données">
+    **Secteur sans soumission** — Aucune entreprise d'un secteur n'a soumis de données pour la période. Ce secteur est absent des agrégats et des comparaisons.
+  </Tab>
+  <Tab title="Forte variation M/M">
+    **Variation mois sur mois > 15 %** — La valeur moyenne d'un indicateur clé pour un secteur a varié de plus de 15 % par rapport au mois précédent. Cela peut refléter un choc économique réel ou une erreur de collecte.
+  </Tab>
+  <Tab title="Écart sectoriel">
+    **Secteur < 50 % du secteur leader** — Un secteur affiche une valeur inférieure à 50 % de celle du secteur le plus performant sur le même indicateur. Cet écart important mérite une analyse spécifique.
+  </Tab>
+</Tabs>
+
+### Gestion des alertes
+
+Chaque alerte peut être :
+
+- **Acquittée** (`acknowledged`) : vous avez pris connaissance de l'alerte et l'intégrez dans votre analyse.
+- **Rejetée** (`dismissed`) : l'alerte ne correspond pas à une situation préoccupante pour la période concernée.
+
+Les alertes ouvertes sont synchronisées automatiquement à l'ouverture de la page Alertes. Vous pouvez forcer une resynchronisation en cliquant sur **Actualiser les alertes**.
+
+<Info>
+  Les alertes analytiques sont aussi visibles sur le tableau de bord Direction via un bandeau d'alerte en haut de page. Cliquez sur le bandeau pour accéder directement au détail des alertes ouvertes.
+</Info>

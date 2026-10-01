@@ -1,0 +1,204 @@
+---
+title: "API Soumissions — Déclarer et valider les données DNPEC"
+sidebarTitle: "Soumissions"
+description: "GET, POST /api/v1/submissions et actions validate/reject — créez, listez et validez les déclarations économiques des entreprises."
+---
+
+Les endpoints `/submissions` gèrent l'intégralité du cycle de vie des déclarations économiques : création en brouillon, soumission officielle, demande de correction, validation ou rejet par les analystes. Chaque soumission est liée à une campagne active et à une entreprise déclarante.
+
+---
+
+## GET /api/v1/submissions
+
+Retourne la liste paginée des soumissions visibles selon votre rôle et les filtres appliqués. Les entreprises ne voient que leurs propres soumissions ; les analystes et super admins accèdent à l'ensemble des déclarations.
+
+<Note>
+  La sécurité au niveau des lignes (Row Level Security) est appliquée automatiquement par la base de données. Une entreprise authentifiée ne peut jamais accéder aux soumissions d'une autre entreprise, même en manipulant les paramètres de requête.
+</Note>
+
+### Paramètres de requête
+
+<ParamField query="page" type="integer" default={1}>
+  Numéro de la page à retourner. La pagination commence à `1`.
+</ParamField>
+
+<ParamField query="limit" type="integer" default={50}>
+  Nombre maximum de soumissions retournées par page.
+</ParamField>
+
+<ParamField query="campaign_id" type="string">
+  UUID de la campagne. Filtre les soumissions appartenant à une campagne spécifique.
+</ParamField>
+
+<ParamField query="company_id" type="string">
+  UUID de l'entreprise déclarante. Réservé aux analystes et super admins pour consulter les déclarations d'une entreprise précise.
+</ParamField>
+
+<ParamField query="status" type="string">
+  Filtre sur le statut de la soumission. Valeurs acceptées : `draft`, `submitted`, `validated`, `rejected`, `correction_requested`.
+</ParamField>
+
+### Exemple de requête
+
+```bash
+curl 'https://votre-domaine/api/v1/submissions?campaign_id=uuid&status=submitted&limit=25' \
+  -H 'Authorization: Bearer TOKEN'
+```
+
+### Exemple de réponse
+
+```json
+{
+  "data": [
+    {
+      "id": "s1a2b3c4-d5e6-7890-fghi-jk1234567890",
+      "campaign_id": "c7d8e9f0-1234-5678-abcd-ef9876543210",
+      "company_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "status": "submitted",
+      "submitted_at": "2025-01-15T10:45:00Z"
+    },
+    {
+      "id": "s9z8y7x6-w5v4-3210-utsr-qp9876543210",
+      "campaign_id": "c7d8e9f0-1234-5678-abcd-ef9876543210",
+      "company_id": "b2c3d4e5-f6a7-8901-bcde-f12345678902",
+      "status": "validated",
+      "submitted_at": "2025-01-14T08:20:00Z"
+    }
+  ],
+  "pagination": { "page": 1, "limit": 25, "total": 98 }
+}
+```
+
+---
+
+## POST /api/v1/submissions
+
+Crée ou sauvegarde une soumission pour une campagne active. Vous pouvez enregistrer une déclaration en brouillon (`draft`) pour la compléter ultérieurement, ou la soumettre directement (`submitted`) pour déclencher le processus de validation par un analyste.
+
+### Paramètres du corps de la requête
+
+<ParamField body="campaign_id" type="string" required>
+  UUID de la campagne à laquelle se rattache cette déclaration. La campagne doit être au statut `active`.
+</ParamField>
+
+<ParamField body="company_id" type="string" required>
+  UUID de l'entreprise déclarante. Doit correspondre à l'entreprise associée au compte authentifié.
+</ParamField>
+
+<ParamField body="data" type="object" required>
+  Réponses aux champs du formulaire sectoriel, structurées sous forme de paires clé-valeur JSON. Les clés correspondent aux identifiants des champs définis dans le formulaire de la campagne (ex. `chiffre_affaires`, `effectif`, `production_tonnes`).
+</ParamField>
+
+<ParamField body="status" type="string">
+  Statut initial de la soumission. Valeurs acceptées : `draft` (sauvegarde sans soumission officielle) ou `submitted` (soumission définitive). Par défaut : `draft`.
+</ParamField>
+
+### Exemple de requête
+
+```bash
+curl -X POST 'https://votre-domaine/api/v1/submissions' \
+  -H 'Authorization: Bearer TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "campaign_id": "c7d8e9f0-1234-5678-abcd-ef9876543210",
+    "company_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "data": {
+      "chiffre_affaires": 15000000,
+      "effectif": 42
+    },
+    "status": "submitted"
+  }'
+```
+
+### Exemple de réponse
+
+```json
+{
+  "id": "s1a2b3c4-d5e6-7890-fghi-jk1234567890",
+  "campaign_id": "c7d8e9f0-1234-5678-abcd-ef9876543210",
+  "company_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "status": "submitted",
+  "submitted_at": "2025-01-15T10:45:00Z"
+}
+```
+
+---
+
+## POST /api/v1/submissions/{id}/validate
+
+Valide une soumission au statut `submitted`, signifiant que les données déclarées sont acceptées par la Direction. La soumission passe au statut `validated` et ses données sont intégrées dans les agrégats analytiques.
+
+<Note>
+  Cet endpoint est réservé aux rôles `analyste` et `super_admin`.
+</Note>
+
+### Paramètres de chemin
+
+<ParamField path="id" type="string" required>
+  UUID de la soumission à valider. La soumission doit être au statut `submitted` pour que la validation aboutisse.
+</ParamField>
+
+### Exemple de requête
+
+```bash
+curl -X POST 'https://votre-domaine/api/v1/submissions/s1a2b3c4-d5e6-7890-fghi-jk1234567890/validate' \
+  -H 'Authorization: Bearer TOKEN'
+```
+
+### Exemple de réponse
+
+```json
+{
+  "id": "s1a2b3c4-d5e6-7890-fghi-jk1234567890",
+  "campaign_id": "c7d8e9f0-1234-5678-abcd-ef9876543210",
+  "company_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "status": "validated",
+  "validated_at": "2025-01-16T14:00:00Z"
+}
+```
+
+---
+
+## POST /api/v1/submissions/{id}/reject
+
+Rejette une soumission avec un motif obligatoire. L'entreprise déclarante reçoit une notification lui indiquant la raison du rejet et peut soumettre une nouvelle déclaration corrigée.
+
+<Note>
+  Cet endpoint est réservé aux rôles `analyste` et `super_admin`.
+</Note>
+
+### Paramètres de chemin
+
+<ParamField path="id" type="string" required>
+  UUID de la soumission à rejeter.
+</ParamField>
+
+### Paramètres du corps de la requête
+
+<ParamField body="reason" type="string" required>
+  Motif du rejet, transmis à l'entreprise pour lui permettre de corriger sa déclaration. Ce champ ne peut pas être vide.
+</ParamField>
+
+<Warning>
+  Le champ `reason` est obligatoire pour le rejet. Une requête sans ce champ retourne une erreur `400 Bad Request`. Rédigez un motif clair et actionnable pour aider l'entreprise à corriger sa déclaration.
+</Warning>
+
+### Exemple de requête
+
+```bash
+curl -X POST 'https://votre-domaine/api/v1/submissions/s1a2b3c4-d5e6-7890-fghi-jk1234567890/reject' \
+  -H 'Authorization: Bearer TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{ "reason": "Les chiffres d'\''affaires semblent incohérents avec les effectifs déclarés." }'
+```
+
+### Exemple de réponse
+
+```json
+{
+  "id": "s1a2b3c4-d5e6-7890-fghi-jk1234567890",
+  "status": "rejected",
+  "rejection_reason": "Les chiffres d'affaires semblent incohérents avec les effectifs déclarés.",
+  "rejected_at": "2025-01-16T15:10:00Z"
+}
+```

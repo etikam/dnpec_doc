@@ -1,0 +1,135 @@
+---
+title: "API Entreprises — Répertoire et inscriptions DNPEC"
+sidebarTitle: "Entreprises"
+description: "GET et POST /api/v1/companies — listez, filtrez et créez des entreprises déclarantes. GET /api/v1/companies/registrations pour les inscriptions en attente."
+---
+
+Les endpoints `/companies` vous permettent d'interroger le répertoire des entreprises déclarantes enregistrées sur la plateforme DNPEC Collecte, de filtrer par statut ou secteur, et de gérer les inscriptions en attente de validation. Toutes les requêtes doivent être authentifiées via un jeton JWT Bearer.
+
+---
+
+## GET /api/v1/companies
+
+Retourne la liste paginée des entreprises visibles selon votre rôle. Les utilisateurs de type entreprise ne voient que leur propre fiche ; les analystes et super admins voient l'ensemble du répertoire.
+
+### Paramètres de requête
+
+<ParamField query="page" type="integer" default={1}>
+  Numéro de la page à retourner. La pagination commence à `1`.
+</ParamField>
+
+<ParamField query="limit" type="integer" default={50}>
+  Nombre maximum d'entreprises retournées par page. Valeur maximale recommandée : `200`.
+</ParamField>
+
+<ParamField query="sector_id" type="string">
+  UUID du secteur d'activité. Permet de restreindre les résultats à un secteur précis (ex. mines, agriculture, commerce).
+</ParamField>
+
+<ParamField query="status" type="string">
+  Filtre sur le statut du compte entreprise. Valeurs acceptées : `pending`, `validated`, `rejected`, `suspended`.
+</ParamField>
+
+### Exemple de requête
+
+```bash
+curl 'https://votre-domaine/api/v1/companies?status=validated&limit=10' \
+  -H 'Authorization: Bearer TOKEN'
+```
+
+### Champs de la réponse
+
+<ResponseField name="data" type="array">
+  Tableau d'objets `Company` correspondant aux critères de recherche.
+
+  <Expandable title="Propriétés d'un objet Company">
+    <ResponseField name="id" type="string (uuid)">
+      Identifiant unique de l'entreprise au format UUID v4.
+    </ResponseField>
+
+    <ResponseField name="nif" type="string">
+      Numéro d'Identification Fiscale de l'entreprise (ex. `GN-123456789`).
+    </ResponseField>
+
+    <ResponseField name="rccm" type="string">
+      Numéro au Registre du Commerce et du Crédit Mobilier. Ce champ est facultatif et peut être absent.
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      Raison sociale ou dénomination officielle de l'entreprise.
+    </ResponseField>
+
+    <ResponseField name="sector_id" type="string (uuid)">
+      UUID du secteur d'activité auquel l'entreprise est rattachée.
+    </ResponseField>
+
+    <ResponseField name="size" type="string">
+      Taille de l'entreprise selon la classification DNPEC. Valeurs possibles : `tpe`, `pme`, `grande_entreprise`.
+    </ResponseField>
+
+    <ResponseField name="legal_status" type="string">
+      Forme juridique de l'entreprise. Valeurs possibles : `sa`, `sarl`, `suarl`, `gie`, `public`, `autre`.
+    </ResponseField>
+
+    <ResponseField name="account_status" type="string">
+      Statut du compte sur la plateforme. Valeurs possibles : `pending`, `validated`, `rejected`, `suspended`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="pagination" type="object">
+  Métadonnées de pagination pour naviguer dans les résultats.
+
+  <Expandable title="Propriétés de pagination">
+    <ResponseField name="page" type="integer">
+      Numéro de la page courante.
+    </ResponseField>
+
+    <ResponseField name="limit" type="integer">
+      Nombre d'éléments retournés sur cette page.
+    </ResponseField>
+
+    <ResponseField name="total" type="integer">
+      Nombre total d'entreprises correspondant aux filtres appliqués.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Exemple de réponse
+
+```json
+{
+  "data": [
+    {
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "nif": "GN-123456789",
+      "name": "Société Minière de Guinée",
+      "sector_id": "uuid-secteur-mines",
+      "size": "grande_entreprise",
+      "legal_status": "sa",
+      "account_status": "validated"
+    }
+  ],
+  "pagination": { "page": 1, "limit": 10, "total": 142 }
+}
+```
+
+---
+
+## POST /api/v1/companies
+
+Crée directement une nouvelle entreprise avec le statut `validated` dans le répertoire DNPEC, sans passer par le formulaire d'inscription public. Utilisez cet endpoint pour intégrer des entreprises connues de la Direction sans nécessiter leur auto-inscription.
+
+<Note>
+  Cet endpoint est réservé aux analystes et super admins. Les entreprises elles-mêmes s'inscrivent via le formulaire `/inscription` disponible sur la plateforme publique.
+</Note>
+
+---
+
+## GET /api/v1/companies/registrations
+
+Retourne la liste des demandes d'inscription en attente de validation, soumises par des entreprises via le portail public. Utilisez cet endpoint pour consulter la file de traitement et prendre des décisions de validation ou de rejet.
+
+<Note>
+  Cet endpoint est réservé aux analystes et super admins. Les entreprises avec le rôle `entreprise` n'ont pas accès à cette liste.
+</Note>

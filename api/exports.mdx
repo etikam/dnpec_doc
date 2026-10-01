@@ -1,0 +1,121 @@
+---
+title: "API Exports analytiques DNPEC — multi-formats"
+sidebarTitle: "Exports"
+description: "GET /api/v1/exports/analytiques — téléchargez les données économiques validées en Excel, CSV, PDF, STATA, EViews ou R avec filtres secteur et période."
+---
+
+L'API d'exports analytiques vous permet de télécharger les données économiques validées issues des campagnes de collecte DNPEC dans le format de votre choix. Que vous travailliez sous Excel, dans un logiciel d'économétrie comme STATA ou EViews, ou dans un environnement statistique R, un seul endpoint couvre tous vos besoins avec des filtres secteur et période.
+
+---
+
+## GET /api/v1/exports/analytiques
+
+Génère et télécharge un fichier d'export synchrone contenant l'ensemble des données validées correspondant aux filtres spécifiés. L'export n'inclut que les soumissions au statut `validated` ; les brouillons et les soumissions en attente sont exclus.
+
+### Paramètres de requête
+
+<ParamField query="format" type="string" required>
+  Format du fichier exporté. Valeurs acceptées : `xlsx`, `csv`, `json`, `pdf`, `docx`, `stata`, `eviews`, `r`.
+</ParamField>
+
+<ParamField query="year" type="integer" required>
+  Année de référence des données à exporter (ex. `2025`).
+</ParamField>
+
+<ParamField query="month" type="integer" required>
+  Mois de référence, entre `1` (janvier) et `12` (décembre).
+</ParamField>
+
+<ParamField query="sector" type="string">
+  Nom ou code du secteur d'activité pour restreindre l'export à un périmètre sectoriel précis (ex. `Mines`, `Agriculture`). Si omis, l'export couvre tous les secteurs.
+</ParamField>
+
+### Exemples de requêtes
+
+<Tabs>
+  <Tab title="Excel">
+    Téléchargez un tableau Excel prêt à l'emploi contenant les données du mois de janvier 2025, tous secteurs confondus.
+
+    ```bash
+    curl 'https://votre-domaine/api/v1/exports/analytiques?format=xlsx&year=2025&month=1' \
+      -H 'Authorization: Bearer TOKEN' \
+      -o export.xlsx
+    ```
+  </Tab>
+
+  <Tab title="STATA">
+    Téléchargez une archive `.zip` contenant le fichier de données au format STATA (`.dta`) et un script d'import `import.do` pour le secteur Mines.
+
+    ```bash
+    curl 'https://votre-domaine/api/v1/exports/analytiques?format=stata&year=2025&month=1&sector=Mines' \
+      -H 'Authorization: Bearer TOKEN' \
+      -o export-mines.zip
+    ```
+  </Tab>
+
+  <Tab title="R">
+    Téléchargez une archive `.zip` contenant le fichier de données `.rds` et un script d'import `import.R` prêt à charger dans RStudio.
+
+    ```bash
+    curl 'https://votre-domaine/api/v1/exports/analytiques?format=r&year=2025&month=1&sector=Mines' \
+      -H 'Authorization: Bearer TOKEN' \
+      -o export-mines-r.zip
+    ```
+  </Tab>
+
+  <Tab title="EViews">
+    Téléchargez une archive `.zip` contenant le fichier workbook EViews (`.wf1`) et le script d'import associé.
+
+    ```bash
+    curl 'https://votre-domaine/api/v1/exports/analytiques?format=eviews&year=2025&month=1&sector=Agriculture' \
+      -H 'Authorization: Bearer TOKEN' \
+      -o export-agriculture-eviews.zip
+    ```
+  </Tab>
+</Tabs>
+
+### Réponse
+
+L'API retourne directement le fichier binaire avec les en-têtes HTTP appropriés :
+
+| En-tête | Valeur exemple |
+|---|---|
+| `Content-Type` | `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet` |
+| `Content-Disposition` | `attachment; filename="export-2025-01.xlsx"` |
+| `Cache-Control` | `private, no-store` |
+
+<Note>
+  Pour les formats `stata`, `eviews` et `r`, la réponse est une archive `.zip` contenant deux fichiers : le fichier de données dans le format natif du logiciel, et un script d'import commenté pour charger les données en une seule commande.
+</Note>
+
+---
+
+## POST /api/v1/exports
+
+Crée une demande d'export asynchrone pour les grands volumes de données. L'API enregistre le job immédiatement et retourne un identifiant de suivi. Le fichier généré sera disponible dans l'historique des exports accessible depuis `/direction/exports` une fois le traitement terminé.
+
+### Exemple de requête
+
+```bash
+curl -X POST 'https://votre-domaine/api/v1/exports' \
+  -H 'Authorization: Bearer TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "format": "xlsx",
+    "year": 2025,
+    "month": 1
+  }'
+```
+
+### Réponse 202 Accepted
+
+```json
+{
+  "job_id": "e3f4a5b6-c7d8-9012-efgh-ij3456789012",
+  "status": "pending"
+}
+```
+
+<Info>
+  Utilisez cet endpoint pour les exports de grands volumes couvrant plusieurs secteurs ou plusieurs mois. Le fichier sera disponible dans l'historique des exports de `/direction/exports` une fois le job terminé. Vous pouvez interroger le statut du job via son `job_id` pour savoir quand le téléchargement est prêt.
+</Info>

@@ -1,0 +1,97 @@
+---
+title: "Exporter les données analytiques DNPEC en multi-formats"
+sidebarTitle: "Exports"
+description: "Exportez les données économiques validées en Excel, CSV, PDF, Word, STATA, EViews ou R depuis l'espace Direction de DNPEC Collecte."
+---
+
+Le module **Exports**, accessible via `/direction/exports`, vous permet de télécharger les données économiques validées dans le format adapté à vos besoins : analyse sous tableur, traitement statistique, intégration dans un système tiers ou archivage officiel. Chaque export est tracé dans un journal d'activité et ne porte que sur les soumissions dont le statut est **Validée**. Ce module est réservé aux profils **analyste** et **super admin**.
+
+## Formats disponibles
+
+Sélectionnez le format qui correspond à l'usage que vous faites des données. Certains formats produisent une archive ZIP contenant à la fois les données et un script d'import prêt à l'emploi.
+
+| Format | Extension | Description | Cas d'usage |
+|---|---|---|---|
+| **Excel** | `.xlsx` | Classeur Excel avec tableaux dynamiques et mise en forme | Analyse sous tableur, tableaux de bord Excel |
+| **CSV** | `.csv` | Données tabulaires séparées par des virgules | Import dans tout logiciel statistique ou base de données |
+| **JSON** | `.json` | Structure de données hiérarchique en JSON | Intégration avec des systèmes tiers ou des API |
+| **PDF** | `.pdf` | Document formaté et imprimable | Rapport imprimable, archivage officiel |
+| **Word** | `.docx` | Document Word éditable | Rédaction et mise en forme de rapports institutionnels |
+| **STATA** | `.zip` | Archive contenant le fichier `.dta` + script `.do` d'import | Analyse économétrique sous STATA |
+| **EViews** | `.zip` | Archive contenant les données + script `.prg` | Modélisation et séries temporelles sous EViews |
+| **R** | `.zip` | Archive contenant le fichier `.R` avec les données chargées | Analyse statistique et visualisation sous R |
+
+<Tip>
+  Si vous utilisez STATA, EViews ou R, décompressez l'archive et exécutez le script fourni (`.do`, `.prg` ou `.R`) pour charger automatiquement les données dans votre environnement de travail.
+</Tip>
+
+## Créer un export
+
+Suivez ces étapes pour générer et télécharger un export depuis l'interface Direction.
+
+<Steps>
+  <Step title="Accédez au module Exports">
+    Naviguez vers `/direction/exports`. La page affiche les filtres de sélection et la liste de vos exports récents.
+  </Step>
+  <Step title="Choisissez le format de sortie">
+    Dans le sélecteur **Format**, choisissez parmi : Excel, CSV, JSON, PDF, Word, STATA, EViews ou R. Consultez le tableau ci-dessus pour choisir le format adapté à votre usage.
+  </Step>
+  <Step title="Appliquez les filtres de périmètre">
+    Précisez le périmètre des données à exporter :
+    - **Secteur** — sélectionnez un secteur spécifique ou laissez vide pour tous les secteurs.
+    - **Année** — indiquez l'année de référence (obligatoire).
+    - **Mois** — indiquez le mois de référence (obligatoire).
+
+    Des filtres supplémentaires sont disponibles : campagne, région, famille de déclarants et indicateur.
+  </Step>
+  <Step title="Lancez l'export">
+    Cliquez sur **Exporter**. Le fichier est généré côté serveur et le téléchargement démarre automatiquement dans votre navigateur. Pour les archives ZIP (STATA, EViews, R), décompressez le fichier après téléchargement.
+  </Step>
+</Steps>
+
+## Historique des exports
+
+Chaque export généré — depuis l'interface ou via l'API — est automatiquement enregistré dans la table `export_jobs`. L'historique est visible en bas de la page `/direction/exports`.
+
+Pour chaque entrée, vous retrouvez :
+
+| Champ | Description |
+|---|---|
+| **Format** | Format du fichier exporté (xlsx, csv, pdf, etc.) |
+| **Statut** | `completed` si l'export a réussi, `failed` en cas d'erreur |
+| **Filtres appliqués** | Secteur, année, mois et autres paramètres utilisés |
+| **Nombre de lignes** | Nombre de soumissions validées incluses dans l'export |
+| **Date** | Horodatage de la demande d'export |
+| **Demandeur** | Nom complet de l'analyste ayant lancé l'export |
+
+## Export via API
+
+Vous pouvez déclencher un export directement depuis un script ou un système tiers en utilisant l'endpoint REST dédié. La session de l'utilisateur authentifié est requise.
+
+```
+GET /api/v1/exports/analytiques
+```
+
+### Paramètres de requête
+
+| Paramètre | Type | Obligatoire | Description |
+|---|---|---|---|
+| `format` | string | ✅ | Format de sortie : `xlsx`, `csv`, `json`, `pdf`, `docx`, `stata`, `eviews`, `r` |
+| `year` | integer | ✅ | Année de référence (ex. `2025`) |
+| `month` | integer | ✅ | Mois de référence, de `1` à `12` |
+| `sector` | string | — | Nom ou identifiant du secteur (optionnel) |
+| `region` | string | — | Code région (optionnel) |
+| `campaign` | string | — | Identifiant de campagne (optionnel) |
+| `indicator` | string | — | Clé d'indicateur (optionnel, ex. `chiffre_affaires`) |
+
+### Exemple
+
+```http
+GET /api/v1/exports/analytiques?format=xlsx&year=2025&month=1&sector=Mines
+```
+
+L'API retourne le fichier binaire en réponse, avec les en-têtes `Content-Type` et `Content-Disposition` appropriés pour déclencher le téléchargement. En cas d'erreur (paramètres invalides, aucune donnée trouvée), l'API retourne un objet JSON `{ "error": "..." }` avec le code HTTP correspondant.
+
+<Note>
+  Les exports ne portent que sur les soumissions dont le statut est **Validée**. Les brouillons et les soumissions rejetées sont systématiquement exclus, quelle que soit la méthode d'export utilisée.
+</Note>

@@ -1,0 +1,63 @@
+---
+title: "Accès, rôles et permissions sur DNPEC Collecte"
+sidebarTitle: "Rôles"
+description: "Comprenez les quatre rôles de la plateforme DNPEC Collecte, leurs niveaux d'accès respectifs et les actions autorisées pour chaque profil."
+---
+
+DNPEC Collecte utilise un système de **contrôle d'accès basé sur les rôles** (RBAC). Chaque compte est associé à un rôle unique qui détermine le portail auquel vous accédez, les données que vous pouvez consulter et les actions que vous êtes autorisé à effectuer. Ce modèle garantit que chaque utilisateur dispose exactement des permissions dont il a besoin, ni plus ni moins.
+
+## Tableau des rôles
+
+Le tableau ci-dessous récapitule les quatre rôles disponibles sur la plateforme, leur portail d'accès et leurs actions principales.
+
+| Rôle | Portail | Accès principal | Actions clés |
+|---|---|---|---|
+| `entreprise` | Portail Entreprise (`/portail/`) | Ses propres données uniquement | Inscription en ligne, soumission de déclarations économiques, consultation de l'historique de soumissions, réception de notifications (in-app, e-mail, SMS) |
+| `agent_saisie` | Portail Direction (`/direction/`) | Données d'une entreprise assignée | Saisie de soumissions au nom d'entreprises (collecte terrain), consultation des formulaires et campagnes en cours, mise à jour des déclarations assignées |
+| `analyste` | Portail Direction (`/direction/`) | Toutes les données de collecte | Création et gestion des campagnes (mensuelle, ponctuelle, régionale), configuration des formulaires sectoriels, validation et rejet des inscriptions et soumissions, production d'analyses et notes de conjoncture, exports multi-formats (Excel, CSV, PDF, Word, STATA, EViews, R) |
+| `super_admin` | Portail Direction (`/direction/`) | Accès total à la plateforme | Toutes les actions de l'analyste, plus : création et gestion des comptes utilisateurs DNPEC, configuration des paramètres de la plateforme, consultation et téléchargement du journal d'audit complet |
+
+<Info>
+  Un utilisateur ne peut détenir qu'un seul rôle à la fois. Le changement de rôle d'un compte DNPEC est effectué exclusivement par un **super_admin** depuis le Portail Direction.
+</Info>
+
+## Comment obtenir un rôle
+
+L'attribution des rôles suit deux canaux distincts selon que vous êtes un répondant externe ou un agent DNPEC.
+
+<Tabs>
+  <Tab title="Entreprises et administrations publiques">
+    Les comptes de type `entreprise` sont créés par **auto-inscription** :
+
+    - **Entreprises** : rendez-vous sur `/inscription`, renseignez vos informations (NIF, RCCM, dénomination, secteur, e-mail) et soumettez votre demande.
+    - **Administrations publiques** (BSD ou SPD) : rendez-vous sur `/inscription/ap` pour accéder au formulaire dédié aux structures publiques.
+
+    Dans les deux cas, votre compte est soumis à une **validation manuelle** par les analystes DNPEC avant d'être activé. Vous recevez une notification dès qu'une décision est prise sur votre dossier.
+  </Tab>
+  <Tab title="Agents DNPEC">
+    Les comptes DNPEC (`analyste`, `agent_saisie`, `super_admin`) ne peuvent **pas** être créés par auto-inscription. Ils sont créés et configurés exclusivement par un **super_admin** depuis le Portail Direction (`/direction/`).
+
+    Si vous êtes un nouvel agent DNPEC, contactez votre super administrateur pour qu'il crée votre compte et vous attribue le rôle approprié. Vous recevrez ensuite un e-mail d'invitation contenant vos identifiants de première connexion.
+  </Tab>
+</Tabs>
+
+## Connexion à la plateforme
+
+La connexion à DNPEC Collecte est unifiée pour tous les utilisateurs : rendez-vous sur la page **/login** et saisissez votre **adresse e-mail** et votre **mot de passe**. La plateforme vous redirige automatiquement vers le portail correspondant à votre rôle après authentification.
+
+<Accordion title="Conditions préalables à la connexion">
+  Avant de pouvoir vous connecter, deux conditions doivent être remplies :
+
+  1. **Adresse e-mail confirmée** : vous devez avoir cliqué sur le lien de confirmation envoyé lors de l'inscription. Sans cette vérification, l'accès est bloqué.
+  2. **Compte activé** : pour les entreprises et administrations publiques, votre compte doit avoir été **validé** (_validated_) par un analyste DNPEC. Un compte en statut _pending_, _rejected_ ou _suspended_ ne peut pas se connecter.
+
+  Si vous ne parvenez pas à vous connecter, vérifiez ces deux points avant de contacter le support.
+</Accordion>
+
+<Accordion title="Réinitialiser votre mot de passe">
+  Si vous avez oublié votre mot de passe, cliquez sur **Mot de passe oublié ?** sur la page `/login`. Saisissez votre adresse e-mail enregistrée : vous recevrez un lien de réinitialisation valable **1 heure**. Définissez un nouveau mot de passe, puis reconnectez-vous normalement.
+</Accordion>
+
+<Warning>
+  Les comptes DNPEC (`analyste`, `agent_saisie`, `super_admin`) **ne peuvent pas s'auto-inscrire** via les formulaires d'inscription publics. Toute tentative d'inscription via `/inscription` ou `/inscription/ap` créera uniquement un compte de type `entreprise`. Contactez votre super administrateur pour obtenir un accès DNPEC.
+</Warning>

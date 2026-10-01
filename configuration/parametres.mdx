@@ -1,0 +1,121 @@
+---
+title: "Configurer les paramètres système de DNPEC Collecte"
+sidebarTitle: "Paramètres"
+description: "Consultez et modifiez les paramètres de la plateforme DNPEC Collecte : seuils qualité, canaux de notification, gestion des utilisateurs et configuration globale."
+---
+
+La page `/direction/parametres` centralise tous les réglages globaux de la plateforme DNPEC Collecte. Ces paramètres contrôlent le comportement du moteur de contrôle qualité, les canaux de notification sortants et les seuils d'alerte analytique. Ils sont stockés dans la table `system_settings` et s'appliquent immédiatement à toutes les campagnes actives dès leur modification. L'accès à cette page est strictement réservé au rôle `super_admin`.
+
+## Paramètres disponibles
+
+Les réglages sont organisés en trois catégories. Développez chacune pour consulter le détail des paramètres configurables.
+
+<Accordion title="Seuils de contrôle qualité">
+  Le moteur de contrôle qualité de DNPEC Collecte applique des règles déterministes sur chaque snapshot analytique. Les trois seuils ci-dessous sont modifiables depuis l'interface et s'appliquent à tous les secteurs sauf configuration spécifique.
+
+  | Paramètre | Valeur par défaut | Comportement |
+  |---|---|---|
+  | **Seuil de couverture minimum** | 70 % | Si le taux de réponse d'une campagne passe en dessous de ce seuil, une alerte de couverture est générée automatiquement et signalée dans l'onglet **Contrôle qualité**. |
+  | **Seuil de variation mensuelle maximum** | 15 % | Si un indicateur varie de plus de 15 % d'un mois sur l'autre (variation M/M), une alerte de variation est levée. Ce seuil protège contre les erreurs de saisie et les valeurs aberrantes. |
+  | **Seuil d'écart sectoriel** | 50 % du leader | Une alerte est déclenchée lorsque la valeur d'un secteur est inférieure à 50 % de celle du secteur le plus performant sur le même indicateur. Ce seuil identifie les secteurs en décrochage significatif. |
+
+  <Tip>
+    Abaissez le seuil de couverture pour les campagnes expérimentales ou les nouveaux secteurs dont le taux de participation est encore en cours de consolidation. Relevez-le pour les campagnes stratégiques où une couverture maximale est indispensable.
+  </Tip>
+</Accordion>
+
+<Accordion title="Canaux de notification">
+  DNPEC Collecte supporte trois canaux de notification sortants. Le canal **plateforme** (`in_app`) est toujours actif. Les canaux **email** et **SMS** nécessitent une configuration serveur préalable.
+
+  <Tabs>
+    <Tab title="Email (Gmail SMTP)">
+      Le canal email utilise Gmail SMTP via Nodemailer. Pour l'activer, les variables d'environnement suivantes doivent être renseignées sur le serveur :
+
+      | Variable | Description |
+      |---|---|
+      | `GMAIL_USER` | Adresse Gmail expéditrice (ex. `noreply@dnpec.gov.gn`) |
+      | `GMAIL_APP_PASSWORD` | Mot de passe d'application Gmail (généré dans les paramètres de sécurité Google) |
+      | `EMAIL_FROM_NAME` | Nom affiché dans l'en-tête de l'email expéditeur |
+
+      Une fois les variables renseignées, activez le canal depuis `/direction/parametres`. La plateforme l'utilise pour les notifications d'ouverture de campagne, les relances et les annonces de communication.
+    </Tab>
+    <Tab title="SMS (Twilio)">
+      Le canal SMS s'appuie sur l'API Twilio. Pour l'activer, renseignez les trois variables suivantes sur le serveur :
+
+      | Variable | Description |
+      |---|---|
+      | `TWILIO_ACCOUNT_SID` | Identifiant de compte Twilio |
+      | `TWILIO_AUTH_TOKEN` | Jeton d'authentification Twilio |
+      | `TWILIO_FROM_NUMBER` | Numéro d'expédition Twilio au format international (ex. `+22460000000`) |
+
+      Une fois configuré, activez le canal depuis `/direction/parametres`. Les SMS sont envoyés lors des relances de campagne et des annonces ciblées.
+
+      <Note>
+        La publication d'une annonce sur le canal Email ou SMS est bloquée si la configuration serveur correspondante est absente. Vérifiez que les variables sont correctement renseignées avant d'activer ces canaux.
+      </Note>
+    </Tab>
+    <Tab title="Plateforme (in-app)">
+      Le canal plateforme est toujours actif et ne nécessite aucune configuration. Les notifications in-app sont insérées directement dans la table `notifications` et affichées dans le centre de notifications de chaque utilisateur concerné. Ce canal est utilisé pour toutes les alertes temps réel : nouvelles soumissions, inscriptions en attente, alertes qualité et annonces de la direction.
+    </Tab>
+  </Tabs>
+</Accordion>
+
+<Accordion title="Gestion des secteurs">
+  La liste des secteurs économiques actifs est administrée depuis `/direction/secteurs`. Vous pouvez y activer ou désactiver un secteur selon les priorités de collecte de la période en cours.
+
+  - Un secteur **actif** apparaît dans les formulaires d'inscription entreprise et peut être ciblé par les campagnes.
+  - Un secteur **désactivé** n'est plus proposé à l'inscription ni aux nouvelles campagnes, mais les données historiques et les soumissions existantes sont conservées.
+
+  <Tip>
+    Désactivez un secteur uniquement si vous êtes certain qu'aucune campagne en cours ne le cible. Vérifiez d'abord la liste des campagnes actives depuis `/direction/campagnes`.
+  </Tip>
+</Accordion>
+
+## Gestion des utilisateurs DNPEC
+
+L'écran `/direction/utilisateurs` vous permet de créer, modifier et désactiver les comptes du personnel DNPEC. Il affiche tous les profils dont le rôle est différent de `entreprise`, triés par date de création décroissante.
+
+Pour **créer un nouvel utilisateur DNPEC**, cliquez sur **Nouvel utilisateur** et renseignez les informations suivantes :
+
+<Steps>
+  <Step title="Renseignez le nom complet">
+    Saisissez le nom et prénom de la personne (2 caractères minimum, 150 maximum).
+  </Step>
+  <Step title="Saisissez l'adresse email">
+    Entrez l'adresse email professionnelle. Elle servira d'identifiant de connexion.
+  </Step>
+  <Step title="Sélectionnez le rôle">
+    Choisissez parmi : `analyste`, `agent_saisie` ou `super_admin`. Ce choix détermine les permissions accordées (voir le [tableau de référence](/securite/roles-et-permissions)).
+  </Step>
+  <Step title="Ajoutez les informations optionnelles">
+    Renseignez si nécessaire le **numéro de téléphone** et la **division** d'appartenance au sein de la DNPEC.
+  </Step>
+  <Step title="Envoyez l'invitation">
+    Cliquez sur **Créer et inviter**. La plateforme crée le compte et envoie automatiquement un email d'invitation contenant un lien de définition du mot de passe.
+  </Step>
+</Steps>
+
+Pour **modifier** un compte existant (nom, rôle, division), cliquez sur la ligne de l'utilisateur et éditez les champs souhaités. Pour **suspendre** un compte, utilisez l'action **Suspendre** : l'utilisateur ne peut plus se connecter, mais ses données et son historique sont conservés. Notez que vous ne pouvez pas suspendre votre propre compte.
+
+## Journal d'audit
+
+La page `/direction/audit` enregistre de manière chronologique toutes les actions sensibles effectuées sur la plateforme. Ce journal est alimenté automatiquement lors de chaque opération d'insertion, de modification ou de suppression sur les tables clés : entreprises, campagnes, soumissions, formulaires, rapports et utilisateurs.
+
+Chaque entrée du journal indique :
+- l'**acteur** (utilisateur ayant effectué l'action),
+- le **type d'action** (`insert`, `update`, `delete`),
+- la **table concernée** et l'identifiant de l'enregistrement,
+- la **date et l'heure** exactes de l'opération,
+- une **charge utile JSON** décrivant le contexte (événement, champs modifiés, raison).
+
+Vous pouvez filtrer le journal par **type d'action**, par **utilisateur** et par **plage de dates**. Un export est disponible pour archivage ou transmission à des fins de contrôle interne.
+
+---
+
+<Warning>
+  La modification des paramètres système affecte immédiatement toutes les campagnes actives, les alertes en cours et les règles de contrôle qualité. Procédez avec précaution et documentez chaque changement. En cas de doute, consultez l'équipe technique DNPEC avant toute modification.
+</Warning>
+
+<Note>
+  L'accès à `/direction/parametres` et `/direction/audit` est strictement réservé au super administrateur. Toute tentative d'accès par un autre rôle entraîne une redirection automatique vers le tableau de bord.
+</Note>

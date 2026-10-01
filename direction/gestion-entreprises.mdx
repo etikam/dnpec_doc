@@ -1,0 +1,73 @@
+---
+title: "Gérer les entreprises et inscriptions sur DNPEC Collecte"
+sidebarTitle: "Entreprises"
+description: "Consultez le répertoire des entreprises déclarantes, validez ou rejetez les inscriptions en attente et gérez les administrations publiques (BSD/SPD)."
+---
+
+Le répertoire des entreprises est la base de référence de DNPEC Collecte. Il regroupe toutes les entités déclarantes — entreprises sectorielles et administrations publiques — qui participent aux campagnes de collecte de données économiques. En tant qu'analyste ou super administrateur, vous gérez l'ensemble du cycle de vie de ces entités : traitement des inscriptions, validation des dossiers, suivi de l'activité de soumission et consultation des statistiques d'enrôlement.
+
+## Répertoire des entreprises
+
+Accédez au répertoire via `/direction/entreprises`. La page affiche un tableau paginé de toutes les entreprises de type `enterprise` enregistrées sur la plateforme, accompagné de cartes de statistiques globales (total, validées, en attente, rejetées, suspendues).
+
+Utilisez les filtres disponibles pour affiner la liste :
+
+- **Secteur** — filtrez par secteur économique (Mines, Finances, Commerce, Industrie, Énergie, etc.) ;
+- **Statut** — `pending`, `validated`, `rejected` ou `suspended` ;
+- **Taille** — selon la classification de l'entreprise ;
+- **Recherche textuelle** — par nom, NIF ou RCCM (recherche par trigramme).
+
+Cliquez sur une ligne du tableau pour ouvrir la fiche complète de l'entreprise.
+
+## Valider ou rejeter une inscription
+
+Lorsqu'une entreprise ou une administration publique crée un compte sur le portail déclarant, son dossier arrive automatiquement dans la file d'attente des inscriptions avec le statut `pending`. Traitez chaque dossier de la manière suivante :
+
+<Steps>
+  <Step title="Accédez à la file des inscriptions">
+    Naviguez vers `/direction/entreprises/inscriptions`. La liste présente tous les dossiers en attente, triés par date d'inscription croissante (les plus anciens en priorité).
+  </Step>
+  <Step title="Consultez le dossier complet">
+    Cliquez sur un dossier pour en examiner les informations : **NIF**, **RCCM**, **raison sociale**, **secteur d'activité**, **forme juridique**, **adresse**, **taille**, **année de création**, ainsi que les informations de contact du compte déclarant associé.
+  </Step>
+  <Step title="Prenez une décision">
+    - Cliquez **Valider** si le dossier est complet et conforme. L'entreprise passe au statut `validated` et devient éligible aux campagnes de collecte.
+    - Cliquez **Rejeter** si le dossier est incomplet ou non conforme. Saisissez obligatoirement un **motif de rejet** qui sera transmis au déclarant.
+  </Step>
+  <Step title="Notification automatique">
+    Dès la décision prise, l'entreprise reçoit une notification automatique sur le portail déclarant l'informant du statut de son dossier. En cas de rejet, le motif saisi est inclus dans la notification.
+  </Step>
+</Steps>
+
+<Note>
+  La validation est irréversible pour le type de répondant (entreprise ou administration publique). Une fois validée, l'entité ne peut pas changer de type (`enterprise` ↔ `public_administration`). Vérifiez soigneusement la nature du déclarant avant de valider.
+</Note>
+
+## Administrations publiques
+
+Les administrations publiques (BSD — Bureau des Services Décentralisés, et SPD — Services Publics Déconcentrés) sont gérées séparément des entreprises sectorielles. Accédez à leur gestion via `/direction/administrations-publiques`.
+
+Le formulaire d'inscription des AP est distinct (`/inscription/ap`) et leur `administration_kind` est figé à la validation. Les AP peuvent être incluses dans les campagnes mensuelles et ponctuelles via les options `include_bsd` et `include_spd` lors de la création de campagne.
+
+## Fiche entreprise
+
+La fiche détaillée d'une entreprise, accessible via `/direction/entreprises/[id]`, centralise toutes les informations relatives à un déclarant :
+
+<CardGroup cols={2}>
+  <Card title="Informations générales" icon="file-text">
+    Raison sociale, sigle, NIF, RCCM, secteur, forme juridique, taille, capital social, région, commune, date de création et responsable DNPEC.
+  </Card>
+  <Card title="Statut du compte" icon="shield-check">
+    Statut actuel (`pending`, `validated`, `rejected`, `suspended`), date de validation, nom du validateur et historique des changements de statut.
+  </Card>
+  <Card title="Historique des soumissions" icon="inbox">
+    Liste de toutes les soumissions liées à cette entreprise, avec leur statut, leur campagne d'origine, le taux de complétion et les dates de soumission et validation.
+  </Card>
+  <Card title="Documents justificatifs" icon="paperclip">
+    Pièces jointes fournies lors de l'inscription (registre du commerce, statuts, etc.), stockées dans le bucket privé de la plateforme.
+  </Card>
+</CardGroup>
+
+## Statistiques d'enrôlement
+
+Consultez les statistiques d'enrôlement agrégées via `/direction/entreprises/statistiques`. Cette page présente la répartition des entreprises par secteur et par statut, les évolutions d'inscription dans le temps et le taux de validation global. Utilisez ces données pour piloter les actions de sensibilisation auprès des acteurs économiques sous-représentés.

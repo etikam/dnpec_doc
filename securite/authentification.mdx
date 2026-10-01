@@ -1,0 +1,76 @@
+---
+title: "Se connecter et gérer son compte DNPEC Collecte"
+sidebarTitle: "Authentification"
+description: "Apprenez à vous connecter à DNPEC Collecte, réinitialiser votre mot de passe, confirmer votre email et sécuriser votre compte déclarant."
+---
+
+DNPEC Collecte utilise Supabase Auth pour sécuriser toutes les connexions : chaque accès est protégé par un couple email et mot de passe, des jetons de session JWT à courte durée de vie, et une isolation stricte des données par profil. Aucun compte n'est accessible sans vérification préalable de l'adresse email.
+
+## Se connecter
+
+Rendez-vous sur la page de connexion et identifiez-vous pour accéder à votre portail personnel. Selon votre rôle, vous serez automatiquement redirigé vers l'espace qui vous est destiné.
+
+<Steps>
+  <Step title="Accédez à la page de connexion">
+    Ouvrez votre navigateur et rendez-vous à l'adresse `/login`. Vous verrez le formulaire de connexion DNPEC Collecte.
+  </Step>
+  <Step title="Saisissez vos identifiants">
+    Entrez votre **adresse email** et votre **mot de passe** dans les champs correspondants.
+  </Step>
+  <Step title="Cliquez sur « Se connecter »">
+    Validez le formulaire en cliquant sur le bouton **Se connecter**. La plateforme vérifie vos identifiants auprès de Supabase Auth.
+  </Step>
+  <Step title="Vous êtes redirigé vers votre portail">
+    - Si votre compte est de type **entreprise** ou **administration publique**, vous arrivez sur `/portail/dashboard`.
+    - Si votre compte est un compte **DNPEC** (analyste, agent de saisie ou super administrateur), vous arrivez sur `/direction/dashboard`.
+  </Step>
+</Steps>
+
+## Confirmation d'email
+
+Avant de pouvoir vous connecter pour la première fois, vous devez confirmer votre adresse email. Cette étape garantit que votre compte est bien associé à une boîte mail que vous contrôlez.
+
+Après avoir complété votre inscription, un email de confirmation est automatiquement envoyé à l'adresse que vous avez fournie. Ouvrez cet email et cliquez sur le **lien de confirmation** qu'il contient. Une fois le lien validé, votre compte est activé et vous pouvez vous connecter normalement.
+
+<Note>
+  Si vous ne trouvez pas l'email de confirmation, vérifiez votre dossier **Courrier indésirable** ou **Spam**. Le lien est valable 24 heures. Passé ce délai, contactez votre administrateur DNPEC pour qu'il vous en envoie un nouveau.
+</Note>
+
+## Réinitialiser votre mot de passe
+
+Si vous avez oublié votre mot de passe, vous pouvez en créer un nouveau à tout moment depuis la page de connexion, sans contacter un administrateur.
+
+<Steps>
+  <Step title="Cliquez sur « Mot de passe oublié »">
+    Sur la page `/login`, cliquez sur le lien **Mot de passe oublié ?** situé sous le champ mot de passe.
+  </Step>
+  <Step title="Saisissez votre adresse email">
+    Entrez l'adresse email associée à votre compte DNPEC Collecte, puis validez.
+  </Step>
+  <Step title="Consultez votre boîte mail">
+    Ouvrez l'email intitulé **Réinitialisation de votre mot de passe DNPEC** et cliquez sur le **lien de réinitialisation**. Ce lien est à usage unique et expire après une courte durée.
+  </Step>
+  <Step title="Définissez votre nouveau mot de passe">
+    Sur la page qui s'ouvre, saisissez votre nouveau mot de passe dans le premier champ, puis confirmez-le dans le second. Cliquez sur **Enregistrer** pour finaliser la modification.
+  </Step>
+</Steps>
+
+## Invitation DNPEC
+
+Les comptes du personnel DNPEC (analystes, agents de saisie, super administrateurs) ne sont **pas créés par auto-inscription**. Seul un super administrateur peut créer ces comptes depuis `/direction/utilisateurs`.
+
+Lorsqu'un super administrateur crée votre compte, la plateforme vous envoie automatiquement un **email d'invitation**. Cet email contient un lien sécurisé et à usage unique. Cliquez sur ce lien pour accéder à la page de création de mot de passe, choisissez un mot de passe robuste, puis confirmez. Votre compte est immédiatement actif.
+
+<Note>
+  Si vous n'avez pas reçu votre email d'invitation, demandez à votre super administrateur DNPEC de vous le renvoyer depuis l'écran de gestion des utilisateurs.
+</Note>
+
+---
+
+<Warning>
+  Ne partagez jamais votre mot de passe avec quiconque. La DNPEC ne vous demandera jamais votre mot de passe par email, téléphone ou tout autre canal. En cas de doute sur la légitimité d'une demande, contactez immédiatement votre administrateur.
+</Warning>
+
+<Note>
+  En cas de problème de connexion persistant (compte bloqué, email non reconnu, lien expiré), contactez votre administrateur DNPEC ou utilisez la procédure de réinitialisation de mot de passe décrite ci-dessus.
+</Note>

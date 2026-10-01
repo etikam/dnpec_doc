@@ -1,0 +1,89 @@
+---
+title: "Envoyer des annonces aux déclarants DNPEC Collecte"
+sidebarTitle: "Communication"
+description: "Diffusez des annonces officielles aux entreprises et administrations via la plateforme, l'email ou le SMS depuis le module Communication de DNPEC Collecte."
+---
+
+Le module **Communication**, accessible via `/direction/communication`, vous permet de diffuser des annonces officielles à l'ensemble des entreprises et administrations déclarantes, ou à un sous-ensemble ciblé par secteur ou type d'administration. Vous pouvez envoyer vos messages via la plateforme, par email ou par SMS, et suivre l'historique de toutes les annonces publiées. Ce module est accessible aux profils **analyste** et **super admin**.
+
+## Canaux de diffusion
+
+La plateforme prend en charge trois canaux de diffusion, que vous pouvez combiner librement lors de l'envoi d'une annonce.
+
+<CardGroup cols={3}>
+  <Card title="Plateforme (in-app)" icon="bell">
+    La notification apparaît directement dans le portail entreprise de chaque destinataire, dans l'espace `/portail/notifications`. Ce canal est **toujours disponible** et ne nécessite aucune configuration serveur supplémentaire.
+  </Card>
+  <Card title="Email" icon="envelope">
+    L'annonce est envoyée par email via Gmail SMTP à l'adresse de contact de chaque entreprise. Ce canal **nécessite une configuration serveur** (variables d'environnement SMTP). S'il n'est pas configuré, il sera grisé lors de la composition.
+  </Card>
+  <Card title="SMS" icon="mobile">
+    L'annonce est envoyée par SMS via Twilio au numéro de téléphone enregistré pour chaque entreprise. Ce canal **nécessite une configuration serveur** (clés Twilio). S'il n'est pas configuré, il sera grisé lors de la composition.
+  </Card>
+</CardGroup>
+
+## Créer et envoyer une annonce
+
+Suivez ces étapes pour composer et diffuser une annonce officielle depuis l'espace Direction.
+
+<Steps>
+  <Step title="Accédez au module Communication">
+    Naviguez vers `/direction/communication`, puis sélectionnez l'onglet **Annonces**. La liste de vos annonces précédentes s'affiche. Cliquez sur **Nouvelle annonce** pour ouvrir le formulaire de composition.
+  </Step>
+  <Step title="Rédigez le titre et le corps du message">
+    Saisissez un **titre** explicite (minimum 3 caractères) et le **corps du message** (minimum 5 caractères). Vous pouvez utiliser des variables de personnalisation dans le corps du message pour adapter automatiquement le texte à chaque destinataire (voir la section suivante).
+  </Step>
+  <Step title="Sélectionnez les canaux de diffusion">
+    Cochez un ou plusieurs canaux parmi **Plateforme**, **Email** et **SMS**. Seuls les canaux configurés sur le serveur sont actifs. Un canal non configuré apparaît grisé et ne peut pas être sélectionné.
+
+    <Info>
+      Vous devez cocher au moins un canal. Si vous souhaitez uniquement notifier via la plateforme, cochez **Plateforme** seul — ce canal est toujours disponible.
+    </Info>
+  </Step>
+  <Step title="Définissez les destinataires">
+    Choisissez le périmètre de diffusion :
+    - **Global** — toutes les entreprises et administrations avec un compte validé reçoivent l'annonce.
+    - **Ciblé** — sélectionnez un ou plusieurs secteurs économiques et/ou types d'administration publique (BSD, SPD) pour restreindre l'envoi à un sous-ensemble de déclarants.
+  </Step>
+  <Step title="Personnalisez le message (optionnel)">
+    Insérez les variables `{nom_entreprise}` et/ou `{nif}` dans le corps du message pour que chaque destinataire reçoive un texte adapté à sa situation. Consultez la section **Variables de personnalisation** ci-dessous pour un exemple d'utilisation.
+  </Step>
+  <Step title="Envoyez ou planifiez l'annonce">
+    - Cliquez sur **Envoyer maintenant** pour une diffusion immédiate.
+    - Cliquez sur **Planifier** pour programmer l'envoi à une date et une heure futures. La date planifiée doit obligatoirement être dans le futur.
+    - Cliquez sur **Enregistrer en brouillon** pour sauvegarder l'annonce sans l'envoyer.
+  </Step>
+</Steps>
+
+## Variables de personnalisation
+
+Le corps de vos annonces peut inclure deux variables dynamiques, remplacées automatiquement par les informations de chaque destinataire au moment de l'envoi.
+
+| Variable | Remplacée par |
+|---|---|
+| `{nom_entreprise}` | La raison sociale de l'entreprise destinataire |
+| `{nif}` | Le numéro d'identification fiscale (NIF) de l'entreprise |
+
+### Exemple
+
+```
+Bonjour,
+
+La DNPEC vous rappelle que la campagne de collecte du 1er trimestre 2025 
+est ouverte. En tant que déclarant enregistré sous le NIF {nif}, 
+l'entreprise {nom_entreprise} est invitée à soumettre ses données 
+avant le 31 mars 2025.
+
+Cordialement,
+La Direction Nationale de la Prévision Économique et de la Conjoncture
+```
+
+Ce message sera personnalisé pour chaque entreprise destinataire avec son nom et son NIF exacts.
+
+<Warning>
+  L'envoi par **Email** ou **SMS** n'est possible que si les canaux correspondants ont été configurés par l'administrateur système (variables d'environnement SMTP pour Gmail, clés d'API pour Twilio). Si un canal n'est pas configuré, il sera grisé dans le formulaire et les envois sur ce canal seront automatiquement ignorés. En cas de doute sur la configuration des canaux, contactez votre administrateur système.
+</Warning>
+
+<Note>
+  Toutes les annonces envoyées sont également visibles par les entreprises destinataires dans leur espace portail, à l'adresse `/portail/annonces`. Les annonces planifiées apparaissent dès leur publication effective.
+</Note>

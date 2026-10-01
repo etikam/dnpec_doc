@@ -1,0 +1,108 @@
+{
+  "projectType": "saas",
+  "projectName": "DNPEC Collecte",
+  "projectDescription": "Plateforme web officielle de collecte nationale des données économiques pour la Direction Nationale de la Prévision Économique et de la Conjoncture (Guinée), permettant aux entreprises et administrations publiques de soumettre leurs déclarations économiques en ligne.",
+  "theme": "luma",
+  "primaryColor": "#1D4ED8",
+  "lightColor": "#EFF6FF",
+  "darkColor": "#1E3A5F",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guide Utilisateur",
+        "groups": [
+          {
+            "group": "Démarrage",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "acces-et-roles"
+            ]
+          },
+          {
+            "group": "Portail Entreprise",
+            "pages": [
+              "portail/inscription",
+              "portail/tableau-de-bord",
+              "portail/campagnes-et-soumissions",
+              "portail/notifications"
+            ]
+          },
+          {
+            "group": "Portail Direction",
+            "pages": [
+              "direction/tableau-de-bord",
+              "direction/gestion-entreprises",
+              "direction/campagnes",
+              "direction/formulaires",
+              "direction/validations",
+              "direction/analyses",
+              "direction/exports",
+              "direction/communication"
+            ]
+          },
+          {
+            "group": "Sécurité & Configuration",
+            "pages": [
+              "securite/authentification",
+              "securite/roles-et-permissions",
+              "configuration/parametres"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Référence API",
+        "groups": [
+          {
+            "group": "Introduction",
+            "pages": [
+              "api/overview",
+              "api/authentification"
+            ]
+          },
+          {
+            "group": "Endpoints",
+            "pages": [
+              "api/entreprises",
+              "api/campagnes",
+              "api/soumissions",
+              "api/exports",
+              "api/audit"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Portail entreprise pour auto-déclaration et suivi des campagnes de collecte",
+    "Portail direction DNPEC pour gestion des campagnes, validations et analyses",
+    "Gestion des inscriptions entreprises et administrations publiques avec validation DNPEC",
+    "Formulaires sectoriels configurables par type de répondant",
+    "Campagnes de collecte mensuelles, ponctuelles et régionales (terrain)",
+    "Workflow de validation des soumissions avec demandes de correction",
+    "Module d'analyses statistiques et génération de notes de conjoncture (IA)",
+    "Exports multi-formats : Excel, CSV, PDF, Word, STATA, EViews, R",
+    "Notifications in-app, email (Gmail SMTP) et SMS (Twilio)",
+    "Journal d'audit complet pour traçabilité des actions sensibles"
+  ],
+  "publicApiSurface": [
+    "GET /api/v1/companies — Liste paginée des entreprises",
+    "POST /api/v1/companies — Création d'une entreprise",
+    "GET /api/v1/companies/registrations — Inscriptions en attente",
+    "GET /api/v1/forms — Formulaires types par secteur",
+    "GET /api/v1/campaigns — Liste paginée des campagnes",
+    "POST /api/v1/campaigns — Création d'une campagne",
+    "POST /api/v1/campaigns/{id}/send — Envoi d'une campagne",
+    "GET /api/v1/submissions — Liste paginée des soumissions",
+    "POST /api/v1/submissions — Création/sauvegarde d'une soumission",
+    "POST /api/v1/submissions/{id}/validate — Validation d'une soumission",
+    "POST /api/v1/submissions/{id}/reject — Rejet motivé d'une soumission",
+    "POST /api/v1/exports — Création d'un export asynchrone",
+    "GET /api/v1/exports/analytiques — Export synchrone multi-formats des données analytiques",
+    "GET /api/v1/rapports/note-conjoncture — Export PDF d'une note de conjoncture",
+    "GET /api/v1/audit — Journal d'audit (super admin)",
+    "GET /api/v1/health — Vérification de santé de l'API"
+  ]
+}

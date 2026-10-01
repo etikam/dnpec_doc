@@ -1,0 +1,147 @@
+---
+title: "Vue d'ensemble de l'API REST DNPEC Collecte"
+sidebarTitle: "Vue d'ensemble"
+description: "L'API REST DNPEC Collecte expose les ressources de collecte économique sous /api/v1. Découvrez les conventions, la pagination et la gestion des erreurs."
+---
+
+L'API REST DNPEC Collecte est le point d'entrée programmatique de la plateforme nationale de collecte de données économiques de la Direction Nationale de la Prévision Économique et de la Conjoncture (DNPEC). Elle vous permet d'intégrer la création de campagnes, la gestion des entreprises, la soumission de formulaires et l'export de données analytiques directement dans vos systèmes d'information. Toutes les ressources sont sécurisées par authentification JWT et Row Level Security.
+
+## URL de base
+
+Toutes les ressources de l'API sont exposées sous le préfixe `/api/v1`. Préfixez chaque chemin documenté par votre domaine d'hébergement suivi de cette base.
+
+```
+https://votre-domaine/api/v1
+```
+
+Les chemins présentés dans cette documentation (par exemple `/campaigns` ou `/submissions`) sont relatifs à cette URL de base. Ainsi, l'endpoint de liste des campagnes est accessible à l'adresse complète `https://votre-domaine/api/v1/campaigns`.
+
+## Spécification OpenAPI
+
+La spécification complète de l'API au format OpenAPI 3.1 est disponible dynamiquement sur votre instance. Elle recense tous les endpoints, les schémas de requête et de réponse, ainsi que les paramètres acceptés.
+
+Ouvrez votre navigateur à l'adresse suivante pour accéder à l'interface Swagger UI interactive :
+
+```
+https://votre-domaine/api/docs
+```
+
+Vous pouvez également importer cette URL directement dans Postman, Insomnia ou tout client REST compatible OpenAPI 3.1 pour générer automatiquement une collection de requêtes.
+
+<Note>
+  La spécification complète au format OpenAPI 3.1 est disponible à `/api/docs`.
+</Note>
+
+## Vérification de santé
+
+Avant d'intégrer l'API dans votre pipeline, vérifiez que l'instance est opérationnelle en appelant l'endpoint de santé. Cet endpoint ne requiert pas d'authentification et répond en quelques millisecondes.
+
+```bash
+curl https://votre-domaine/api/v1/health
+```
+
+L'endpoint renvoie un objet JSON indiquant l'état du service, son nom et la version de l'API :
+
+<Tabs>
+  <Tab title="Succès (HTTP 200)">
+    ```json
+    {
+      "status": "ok",
+      "service": "dnpec-collecte",
+      "apiVersion": "v1"
+    }
+    ```
+  </Tab>
+  <Tab title="Erreur (HTTP 503)">
+    ```json
+    {
+      "status": "error"
+    }
+    ```
+  </Tab>
+</Tabs>
+
+Utilisez cet endpoint dans vos sondes de liveness et readiness (Kubernetes, load balancers, outils de monitoring) pour détecter une indisponibilité sans consommer de quota authentifié.
+
+## Pagination
+
+Tous les endpoints qui retournent des listes supportent la pagination par curseur de page. Passez les paramètres suivants en query string pour naviguer dans les résultats.
+
+<ParamField query="page" type="integer">
+  Numéro de page à récupérer (défaut : 1). La numérotation commence à 1.
+</ParamField>
+
+<ParamField query="limit" type="integer">
+  Nombre de résultats par page (défaut : 50, maximum : 200). Au-delà de 200, la valeur est ramenée à 200.
+</ParamField>
+
+Chaque réponse paginée enveloppe les données dans un objet contenant un champ `data` et un objet `pagination` qui vous indique votre position dans l'ensemble des résultats :
+
+```json
+{
+  "data": [...],
+  "pagination": {
+    "page": 1,
+    "limit": 50,
+    "total": 243
+  }
+}
+```
+
+Le champ `total` représente le nombre total d'enregistrements correspondant à votre requête (tous filtres appliqués), indépendamment de la page courante. Utilisez-le pour calculer le nombre de pages : `Math.ceil(total / limit)`.
+
+<Tip>
+  Pour récupérer tous les résultats en un minimum d'appels, passez `limit=200`. Pour les exports massifs, privilégiez l'endpoint `/exports` qui génère un fichier de manière asynchrone.
+</Tip>
+
+## Format des erreurs
+
+Lorsqu'une requête échoue, l'API renvoie toujours un objet JSON structuré avec trois champs : un code machine (`error`), un message lisible en français (`message`) et un objet optionnel `details` contenant des informations complémentaires (par exemple la liste des champs invalides lors d'une erreur de validation).
+
+```json
+{
+  "error": "not_found",
+  "message": "La ressource demandée est introuvable.",
+  "details": {}
+}
+```
+
+Le tableau suivant récapitule les codes d'erreur que vous pouvez rencontrer et les actions correctives associées.
+
+| Code `error`       | Statut HTTP | Description                                                      | Action recommandée                                      |
+|--------------------|-------------|------------------------------------------------------------------|---------------------------------------------------------|
+| `not_found`        | 404         | La ressource ciblée n'existe pas ou n'est pas visible pour vous  | Vérifiez l'identifiant et vos permissions               |
+| `unauthorized`     | 401         | Token JWT absent, invalide ou expiré                             | Authentifiez-vous et renouvelez votre token             |
+| `forbidden`        | 403         | Votre rôle ne permet pas cette action                            | Contactez un administrateur DNPEC                       |
+| `validation_error` | 422         | Un ou plusieurs champs du corps de la requête sont invalides     | Consultez le champ `details` pour les champs en erreur  |
+| `server_error`     | 500/503     | Erreur interne ou service temporairement indisponible            | Réessayez après quelques secondes ou contactez le support |
+
+<Accordion title="Exemple de réponse validation_error avec details">
+  Lors d'une erreur de validation, le champ `details` contient un objet dont les clés sont les noms des champs invalides et les valeurs sont des tableaux de messages d'erreur.
+
+  ```json
+  {
+    "error": "validation_error",
+    "message": "Les données soumises contiennent des erreurs de validation.",
+    "details": {
+      "nif": ["Le NIF doit contenir exactement 9 chiffres."],
+      "sector_id": ["Le secteur indiqué n'existe pas."]
+    }
+  }
+  ```
+</Accordion>
+
+## Sécurité des données
+
+L'API DNPEC Collecte applique le principe du moindre privilège à chaque niveau de la stack. Chaque requête authentifiée est soumise au Row Level Security (RLS) de la base de données : les politiques RLS garantissent que vous ne pouvez lire, modifier ou supprimer que les enregistrements pour lesquels votre compte est explicitement autorisé.
+
+<CardGroup cols={2}>
+  <Card title="Isolation par entreprise" icon="building">
+    Un compte entreprise ne voit que ses propres soumissions et les campagnes qui lui ont été affectées. Il ne peut pas accéder aux données d'une autre entreprise.
+  </Card>
+  <Card title="Contrôle par rôle" icon="shield-halved">
+    Les analystes DNPEC et les super admins disposent d'une visibilité élargie définie par leurs rôles. Toute tentative d'accès hors périmètre retourne une erreur `403 forbidden`.
+  </Card>
+</CardGroup>
+
+Vous n'avez aucune configuration supplémentaire à effectuer : la sécurité est appliquée automatiquement côté serveur dès que vous fournissez un token JWT valide dans vos requêtes.

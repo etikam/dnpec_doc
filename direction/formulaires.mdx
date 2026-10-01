@@ -1,0 +1,81 @@
+---
+title: "Configurer les formulaires sectoriels sur DNPEC Collecte"
+sidebarTitle: "Formulaires"
+description: "Créez et gérez les formulaires types par secteur. Publiez de nouvelles versions et associez-les aux campagnes de collecte pour chaque type de répondant."
+---
+
+Les formulaires types sont les questionnaires que les entreprises et administrations publiques remplissent lors de chaque campagne de collecte. Chaque formulaire est rattaché à un périmètre précis — un secteur économique, un type d'administration publique (BSD ou SPD) ou une zone terrain régionale — et versionné de façon à garantir la cohérence des données historiques. En tant qu'analyste ou super administrateur, vous créez, modifiez et publiez les formulaires, puis vous les associez aux campagnes.
+
+## Répertoire des formulaires
+
+Accédez au répertoire via `/direction/formulaires`. La page organise les formulaires en quatre onglets :
+
+- **Sectoriels** — un formulaire par secteur actif (Mines, Finances, Commerce, Industrie, Énergie, etc.) destiné aux entreprises ;
+- **Administrations publiques** — formulaires spécifiques aux répondants **BSD** et **SPD** ;
+- **Régionaux (terrain)** — formulaires de portée régionale pour les campagnes terrain (ménages et groupements) ;
+- **Ponctuels** — formulaires ad-hoc non rattachés à un secteur fixe.
+
+Pour chaque entrée, vous voyez le titre du formulaire, son statut (`draft` ou `published`), la date de publication, le nom du publicateur et, le cas échéant, la campagne active qui l'utilise actuellement.
+
+## Créer un formulaire
+
+Suivez ces étapes pour créer un nouveau formulaire type depuis le répertoire.
+
+<Steps>
+  <Step title="Ouvrez le formulaire de création">
+    Depuis `/direction/formulaires`, cliquez sur **Nouveau formulaire**. Selon l'onglet actif, le type de périmètre est pré-sélectionné.
+  </Step>
+  <Step title="Choisissez le périmètre">
+    Sélectionnez le **périmètre du formulaire** :
+    - **Sectoriel** (`sector`) : choisissez le secteur économique ciblé ; le formulaire sera proposé lors de la création des campagnes mensuelles et ponctuelles pour ce secteur.
+    - **Administration publique** (`public_administration`) : choisissez `bsd` ou `spd` comme `administration_kind`.
+    - **Régional terrain** (`regional`) : formulaire dédié aux campagnes terrain.
+    - **Ponctuel** (`punctual`) : formulaire libre pour les campagnes ad-hoc.
+  </Step>
+  <Step title="Définissez les champs du formulaire">
+    Construisez le questionnaire section par section. Pour chaque champ, renseignez :
+    - le **libellé** affiché au déclarant ;
+    - le **type de données** : texte, nombre entier, nombre décimal, date, sélection (liste), booléen ;
+    - si le champ est **obligatoire** ou facultatif ;
+    - les **règles de cohérence inter-champs** (ex. : le chiffre d'affaires ne peut pas être inférieur au résultat net).
+  </Step>
+  <Step title="Sauvegardez et publiez">
+    Cliquez **Enregistrer** pour sauvegarder en brouillon (`draft`). Lorsque le formulaire est finalisé, cliquez **Publier** : une version immuable est créée dans `form_versions` et le statut passe à `published`. Le formulaire devient alors disponible pour être associé à une campagne.
+  </Step>
+</Steps>
+
+## Versions de formulaire
+
+La plateforme applique un versionnage strict pour préserver la cohérence des données historiques.
+
+Chaque publication d'un formulaire crée un enregistrement immuable dans `form_versions`. Les campagnes référencent une version spécifique au moment de leur création — et non le formulaire "courant". Ainsi, même si vous publiez une version 2 d'un formulaire, toutes les soumissions associées à une campagne antérieure restent liées à la version 1 qui était en vigueur à leur création.
+
+<Warning>
+  La modification d'un formulaire publié crée une nouvelle version. Les soumissions existantes restent liées à leur version d'origine et ne sont pas affectées par les modifications ultérieures. Vérifiez bien qu'une campagne active n'utilise pas la version que vous souhaitez faire évoluer avant de publier.
+</Warning>
+
+## Associer un formulaire à une campagne
+
+Pour les campagnes **mensuelles** et **ponctuelles**, la résolution du formulaire par entité cible suit la logique suivante :
+
+1. **`campaign_respondent_forms`** — liaison explicite par campagne, type de répondant (`enterprise` ou `public_administration`) et, pour les entreprises, par secteur. C'est la source prioritaire.
+2. **`campaign_sectors`** — si aucune liaison explicite n'existe, la plateforme utilise le formulaire sectoriel par défaut.
+3. **`campaigns.form_template_id`** — formulaire de repli au niveau campagne.
+
+Cette architecture vous permet d'assigner des formulaires différents selon le type de répondant au sein d'une même campagne mensuelle : les entreprises du secteur Mines reçoivent le formulaire Mines, les BSD reçoivent le formulaire BSD, et les SPD reçoivent le formulaire SPD.
+
+<Tabs>
+  <Tab title="Campagne mensuelle multi-secteurs">
+    Pour une campagne mensuelle couvrant plusieurs secteurs, la plateforme résout automatiquement le formulaire publié pour chaque secteur lors de la création de la campagne. Chaque liaison est enregistrée dans `campaign_sectors` (une ligne par secteur).
+  </Tab>
+  <Tab title="Campagne avec BSD/SPD">
+    Lorsque vous cochez **Inclure BSD** ou **Inclure SPD**, la plateforme vérifie qu'un formulaire publié existe pour ce type d'administration (`template_scope = public_administration`, `administration_kind = bsd` ou `spd`). Si ce n'est pas le cas, la création de la campagne est bloquée avec un message d'erreur explicite.
+  </Tab>
+  <Tab title="Campagne régionale terrain">
+    Les campagnes régionales utilisent un formulaire de portée `regional` que vous sélectionnez manuellement lors de la création. Un seul formulaire est assigné à l'ensemble de la campagne terrain.
+  </Tab>
+</Tabs>
+
+<Note>
+  Le formulaire type **Mines** (`template_scope = sector`) est présent dans le jeu de données initial (seed) de la plateforme et est publié par défaut. Il sert de référence pour la configuration des campagnes sectorielles dès l'ouverture de la plateforme.
+</Note>

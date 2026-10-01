@@ -1,0 +1,52 @@
+---
+title: "DNPEC Collecte : collecte économique nationale en ligne"
+sidebarTitle: "Introduction"
+description: "DNPEC Collecte digitalise la collecte nationale des données économiques en Guinée. Découvrez les fonctionnalités, les portails et les rôles disponibles."
+---
+
+**DNPEC Collecte** est la plateforme officielle de collecte des données économiques de la République de Guinée, opérée par la Direction Nationale de la Prévision Économique et de la Conjoncture (DNPEC). Elle remplace les processus de déclaration papier en offrant un espace numérique sécurisé où les entreprises et les administrations publiques transmettent leurs données économiques, et où les équipes DNPEC orchestrent les campagnes de collecte, valident les soumissions et produisent des analyses statistiques et des notes de conjoncture.
+
+## Les deux portails
+
+La plateforme est organisée autour de deux espaces distincts, chacun conçu pour son public spécifique.
+
+<CardGroup cols={2}>
+  <Card title="Portail Entreprise" icon="building" href="/portail/inscription">
+    **Accessible sur `/portail/`**
+
+    Destiné aux entreprises et aux administrations publiques (BSD et SPD). Depuis cet espace, vous inscrivez votre structure, consultez les campagnes de collecte actives, remplissez et soumettez vos formulaires de déclaration, et suivez l'historique de vos soumissions.
+  </Card>
+  <Card title="Portail Direction" icon="chart-line" href="/direction/">
+    **Accessible sur `/direction/`**
+
+    Réservé aux agents DNPEC (super_admin, analyste, agent_saisie). Depuis cet espace, vous gérez les campagnes, validez les inscriptions et les soumissions, effectuez des saisies terrain, configurez les formulaires et exportez les données pour l'analyse statistique.
+  </Card>
+</CardGroup>
+
+## Fonctionnalités clés
+
+DNPEC Collecte couvre l'ensemble du cycle de vie de la collecte économique, de l'inscription des répondants jusqu'à la publication des analyses.
+
+- **Inscription en ligne et validation de compte** : les entreprises et administrations publiques s'inscrivent en autonomie ; les analystes DNPEC valident, rejettent ou suspendent les comptes selon un flux de modération structuré.
+- **Formulaires sectoriels dynamiques** : chaque campagne est associée à un formulaire adapté au secteur et au type de répondant, avec des champs conditionnels et des contrôles de cohérence intégrés.
+- **Campagnes de collecte mensuelles, ponctuelles et régionales** : programmez et gérez des campagnes selon trois types (`monthly`, `punctual`, `regional`) avec des périodes d'ouverture et de fermeture configurables.
+- **Suivi des soumissions en temps réel** : chaque soumission transite par un cycle de statuts traçable : _draft_ → _submitted_ → _validated_ (ou _rejected_ / _correction_requested_).
+- **Analyses et notes de conjoncture (IA)** : les analystes disposent d'outils d'analyse assistée et de génération automatique de notes de conjoncture à partir des données collectées.
+- **Exports multi-formats** : téléchargez les données aux formats Excel, CSV, PDF, Word, STATA, EViews et R pour répondre aux besoins de tous les profils statisticiens.
+- **Notifications in-app, e-mail et SMS** : chaque action importante (validation de compte, ouverture de campagne, changement de statut de soumission) déclenche une notification multicanale.
+- **Journal d'audit complet** : toutes les actions sensibles sont enregistrées et consultables par les super admins pour garantir la traçabilité et la conformité.
+
+## Les rôles utilisateur
+
+L'accès à la plateforme est gouverné par un système de rôles. Chaque rôle détermine le portail accessible et les actions autorisées.
+
+| Rôle | Portail | Accès principal | Actions clés |
+|---|---|---|---|
+| `entreprise` | Portail Entreprise (`/portail/`) | Ses propres données uniquement | Inscription, soumission de déclarations, consultation de l'historique, réception de notifications |
+| `agent_saisie` | Portail Direction (`/direction/`) | Données d'une entreprise assignée | Saisie de soumissions au nom d'entreprises, accès terrain, consultation des formulaires |
+| `analyste` | Portail Direction (`/direction/`) | Toutes les données de collecte | Gestion des campagnes, validation des inscriptions et soumissions, analyses statistiques, exports |
+| `super_admin` | Portail Direction (`/direction/`) | Accès total à la plateforme | Tout ce que fait l'analyste, plus : gestion des utilisateurs, configuration des paramètres, consultation du journal d'audit |
+
+<Info>
+  Les comptes de type `entreprise` sont créés par auto-inscription sur `/inscription`. Les comptes DNPEC (`analyste`, `agent_saisie`, `super_admin`) sont créés et attribués par un super administrateur depuis le Portail Direction.
+</Info>

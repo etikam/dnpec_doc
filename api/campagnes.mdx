@@ -1,0 +1,153 @@
+---
+title: "API Campagnes — Créer et piloter les collectes DNPEC"
+sidebarTitle: "Campagnes"
+description: "GET et POST /api/v1/campaigns, POST /api/v1/campaigns/{id}/send — listez, créez et lancez des campagnes de collecte économique."
+---
+
+Les endpoints `/campaigns` couvrent l'ensemble du cycle de vie des campagnes de collecte économique sur la plateforme DNPEC Collecte : création, configuration, planification et envoi aux entreprises cibles. Une campagne passe par les statuts `draft` → `scheduled` → `active` → `closed` → `archived` au fil de son traitement.
+
+---
+
+## GET /api/v1/campaigns
+
+Retourne la liste paginée des campagnes visibles selon votre rôle. Les analystes et super admins voient toutes les campagnes ; les utilisateurs de type entreprise ne voient que les campagnes actives qui les concernent.
+
+### Paramètres de requête
+
+<ParamField query="page" type="integer" default={1}>
+  Numéro de la page à retourner. La pagination commence à `1`.
+</ParamField>
+
+<ParamField query="limit" type="integer" default={50}>
+  Nombre maximum de campagnes retournées par page.
+</ParamField>
+
+<ParamField query="status" type="string">
+  Filtre sur le statut de la campagne. Valeurs acceptées : `draft`, `scheduled`, `active`, `closed`, `archived`.
+</ParamField>
+
+### Exemple de requête
+
+```bash
+curl 'https://votre-domaine/api/v1/campaigns?status=active&limit=20' \
+  -H 'Authorization: Bearer TOKEN'
+```
+
+### Exemple de réponse
+
+```json
+{
+  "data": [
+    {
+      "id": "c7d8e9f0-1234-5678-abcd-ef9876543210",
+      "title": "Collecte Mines Janvier 2025",
+      "status": "active",
+      "reference_period": "2025-01"
+    },
+    {
+      "id": "d1e2f3a4-5678-90ab-cdef-012345678901",
+      "title": "Collecte Agriculture T1 2025",
+      "status": "scheduled",
+      "reference_period": "2025-Q1"
+    }
+  ],
+  "pagination": { "page": 1, "limit": 20, "total": 7 }
+}
+```
+
+---
+
+## POST /api/v1/campaigns
+
+Crée une nouvelle campagne de collecte. La campagne est créée avec le statut `draft` par défaut. Vous devez ensuite appeler `POST /api/v1/campaigns/{id}/send` pour la matérialiser et notifier les entreprises cibles.
+
+<Note>
+  Cet endpoint est réservé aux rôles `analyste` et `super_admin`.
+</Note>
+
+### Paramètres du corps de la requête
+
+<ParamField body="title" type="string" required>
+  Intitulé de la campagne, tel qu'il apparaîtra aux entreprises déclarantes (ex. `Collecte Mines Janvier 2025`).
+</ParamField>
+
+<ParamField body="reference_period" type="string" required>
+  Période de référence des données collectées, au format `YYYY-MM` pour une collecte mensuelle (ex. `2025-01`) ou libre pour une collecte ponctuelle.
+</ParamField>
+
+<ParamField body="opens_at" type="string" required>
+  Date d'ouverture de la campagne aux déclarations, au format ISO 8601 (ex. `2025-01-01`).
+</ParamField>
+
+<ParamField body="closes_at" type="string" required>
+  Date de clôture de la campagne, au format ISO 8601 (ex. `2025-01-31`). Après cette date, aucune nouvelle soumission n'est acceptée.
+</ParamField>
+
+<ParamField body="campaign_type" type="string" required>
+  Type de campagne. Valeurs acceptées :
+  - `monthly` — collecte mensuelle récurrente par secteur
+  - `punctual` — collecte ponctuelle à périmètre libre
+  - `regional` — collecte ciblant une région géographique précise
+</ParamField>
+
+<ParamField body="sector_id" type="string">
+  UUID du secteur d'activité ciblé par la campagne. Recommandé pour les campagnes de type `monthly` afin d'envoyer les bons formulaires sectoriels.
+</ParamField>
+
+### Exemple de requête
+
+```bash
+curl -X POST 'https://votre-domaine/api/v1/campaigns' \
+  -H 'Authorization: Bearer TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "title": "Collecte Mines Janvier 2025",
+    "reference_period": "2025-01",
+    "opens_at": "2025-01-01",
+    "closes_at": "2025-01-31",
+    "campaign_type": "monthly",
+    "sector_id": "uuid-mines"
+  }'
+```
+
+### Exemple de réponse
+
+```json
+{
+  "id": "c7d8e9f0-1234-5678-abcd-ef9876543210",
+  "title": "Collecte Mines Janvier 2025",
+  "status": "draft",
+  "reference_period": "2025-01",
+  "opens_at": "2025-01-01",
+  "closes_at": "2025-01-31",
+  "campaign_type": "monthly",
+  "sector_id": "uuid-mines"
+}
+```
+
+---
+
+## POST /api/v1/campaigns/{id}/send
+
+Matérialise les cibles de la campagne (entreprises éligibles selon le secteur et les critères définis) et envoie les notifications d'ouverture. Après cet appel, la campagne passe au statut `scheduled` ou `active` selon la date d'ouverture configurée.
+
+### Paramètres de chemin
+
+<ParamField path="id" type="string" required>
+  UUID de la campagne à envoyer. La campagne doit être au statut `draft` pour que cet appel aboutisse.
+</ParamField>
+
+### Exemple de requête
+
+```bash
+curl -X POST 'https://votre-domaine/api/v1/campaigns/c7d8e9f0-1234-5678-abcd-ef9876543210/send' \
+  -H 'Authorization: Bearer TOKEN'
+```
+
+### Réponse 202 Accepted
+
+L'API répond avec `202 Accepted` pour indiquer que le traitement a été pris en charge de manière asynchrone. Vous pouvez vérifier le nouveau statut de la campagne via `GET /api/v1/campaigns/{id}`.
+
+```json
+{ "status": "accepted" }
+```

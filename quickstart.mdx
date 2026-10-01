@@ -1,47 +1,64 @@
 ---
-title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+title: "Démarrez avec DNPEC Collecte en 4 étapes"
+sidebarTitle: "Démarrage rapide"
+description: "Apprenez à créer votre compte, faire valider votre inscription, répondre à une campagne de collecte et soumettre vos données économiques."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
+Ce guide vous accompagne à travers les quatre étapes essentielles pour démarrer sur DNPEC Collecte : la création de votre compte, la confirmation de votre adresse e-mail, la validation de votre inscription par les équipes DNPEC, et la soumission de votre première déclaration économique dans le cadre d'une campagne active. À l'issue de ce guide, vous serez en mesure de participer pleinement aux campagnes de collecte qui vous concernent.
 
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
-
-## Prerequisites
-
-Before you begin, you must have:
-
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
+<Note>
+  Si vous représentez une administration publique (BSD ou SPD), utilisez l'URL d'inscription dédiée **/inscription/ap** au lieu de `/inscription`. Le formulaire est adapté aux structures publiques et distingue automatiquement les deux types de répondants.
+</Note>
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
+  <Step title="Créer votre compte">
+    Rendez-vous sur **/inscription** depuis votre navigateur. Remplissez le formulaire d'inscription avec les informations suivantes :
 
-    ```bash
-    npm install your-package
-    ```
+    - **NIF** (Numéro d'Identification Fiscale)
+    - **RCCM** (Registre du Commerce et du Crédit Mobilier)
+    - **Dénomination sociale** de votre entreprise
+    - **Secteur d'activité**
+    - **Adresse e-mail** professionnelle (elle servira d'identifiant de connexion)
+    - **Mot de passe** (choisissez un mot de passe fort d'au moins 8 caractères)
+
+    Vérifiez l'exactitude de toutes les informations, puis cliquez sur **Soumettre ma demande d'inscription**. Votre dossier est immédiatement transmis aux équipes DNPEC pour examen.
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
+  <Step title="Valider votre adresse e-mail">
+    Après la soumission du formulaire, vous recevez un e-mail de confirmation à l'adresse que vous avez renseignée. Ouvrez cet e-mail et cliquez sur le lien **Confirmer mon adresse e-mail**.
 
-    ```bash
-    your-cli init
-    ```
+    Ce lien est valable 24 heures. Si vous ne le trouvez pas dans votre boîte de réception, vérifiez votre dossier **Courrier indésirable** ou **Spam**. Vous pouvez également demander un renvoi depuis la page de connexion en cliquant sur **Renvoyer l'e-mail de confirmation**.
+
+    <Tip>
+      Ajoutez l'adresse d'expédition de DNPEC Collecte à vos contacts pour éviter que les prochaines notifications (ouvertures de campagne, changements de statut) n'arrivent en spam.
+    </Tip>
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+  <Step title="Attendre la validation DNPEC">
+    Une fois votre e-mail confirmé, votre compte passe en statut **en attente** (_pending_). Les analystes DNPEC examinent votre dossier — ils vérifient la cohérence des informations déclarées (NIF, RCCM, secteur) avant d'activer votre accès.
 
-    ```bash
-    your-cli start
-    ```
+    Trois issues sont possibles à l'issue de cet examen :
+
+    | Statut | Signification | Action requise de votre part |
+    |---|---|---|
+    | `validated` | Votre compte est activé | Connectez-vous et accédez aux campagnes |
+    | `rejected` | Le dossier ne répond pas aux critères | Consultez le motif et contactez la DNPEC |
+    | `suspended` | Le compte a été temporairement désactivé | Contactez la DNPEC pour régulariser la situation |
+
+    Vous recevez une notification **in-app**, par **e-mail** et par **SMS** dès que le statut de votre compte change. Le délai de traitement habituel est de 1 à 3 jours ouvrés.
+  </Step>
+  <Step title="Répondre à votre première campagne">
+    Une fois votre compte validé, connectez-vous sur **/portail/** et naviguez vers **Campagnes** (`/portail/campagnes`). La liste des campagnes actives qui vous concernent s'affiche automatiquement en fonction de votre secteur et de votre type de répondant.
+
+    Procédez comme suit pour soumettre votre première déclaration :
+
+    1. **Sélectionnez** la campagne active souhaitée dans la liste.
+    2. **Cliquez sur Commencer la déclaration** pour ouvrir le formulaire sectoriel.
+    3. **Remplissez** tous les champs obligatoires (marqués d'un astérisque). Répondez aux questions en vous appuyant sur vos données comptables et opérationnelles de la période concernée.
+    4. **Soumettez** votre déclaration en cliquant sur **Valider et soumettre**.
+
+    Après soumission, votre déclaration passe au statut _submitted_. Les analystes DNPEC la traitent et vous notifient si elle est **validée** ou si des **corrections** sont demandées.
+
+    <Tip>
+      Vous pouvez enregistrer un brouillon (_draft_) à tout moment avant la soumission finale en cliquant sur **Enregistrer le brouillon**. Votre saisie est conservée et vous pouvez reprendre là où vous en étiez lors de votre prochaine connexion.
+    </Tip>
   </Step>
 </Steps>
-
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
-
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>

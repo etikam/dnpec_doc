@@ -1,0 +1,48 @@
+---
+title: "Rôles et permissions détaillés sur DNPEC Collecte"
+sidebarTitle: "Permissions"
+description: "Référence complète des permissions par rôle sur DNPEC Collecte : ce que chaque profil peut consulter, créer, modifier ou administrer."
+---
+
+DNPEC Collecte applique un système de contrôle d'accès basé sur les rôles (RBAC) : chaque compte est associé à un profil qui détermine précisément les fonctionnalités accessibles, les données visibles et les actions autorisées. Ce système est appliqué à deux niveaux — dans l'interface et directement dans la base de données via Row Level Security (RLS) — ce qui garantit qu'aucun utilisateur ne peut accéder à des données qui ne lui sont pas destinées, même en cas d'erreur dans l'interface.
+
+## Tableau de référence
+
+Le tableau ci-dessous récapitule toutes les actions disponibles sur la plateforme et les rôles habilités à les effectuer. Utilisez-le pour identifier rapidement ce que chaque profil peut ou ne peut pas faire.
+
+| Action | `entreprise` | `agent_saisie` | `analyste` | `super_admin` |
+|---|:---:|:---:|:---:|:---:|
+| S'inscrire sur la plateforme | ✓ | — | — | — |
+| Soumettre une déclaration | ✓ | ✓ | — | — |
+| Consulter son historique de soumissions | ✓ | — | — | — |
+| Valider une inscription entreprise | — | — | ✓ | ✓ |
+| Créer / modifier un formulaire | — | — | ✓ | ✓ |
+| Créer / envoyer une campagne | — | — | ✓ | ✓ |
+| Valider / rejeter une soumission | — | — | ✓ | ✓ |
+| Exporter les données analytiques | — | — | ✓ | ✓ |
+| Générer une note de conjoncture | — | — | ✓ | ✓ |
+| Publier un rapport | — | — | — | ✓ |
+| Envoyer des annonces (communication) | — | — | ✓ | ✓ |
+| Gérer les utilisateurs DNPEC | — | — | — | ✓ |
+| Consulter le journal d'audit | — | — | — | ✓ |
+| Modifier les paramètres système | — | — | — | ✓ |
+| Saisie terrain (collecte régionale) | — | ✓ | — | ✓ |
+
+## Gestion des comptes DNPEC
+
+Les comptes du personnel DNPEC ne sont jamais créés par auto-inscription. Seul un super administrateur peut créer des comptes pour les analystes (`analyste`) et les agents de saisie (`agent_saisie`), ainsi que pour d'autres super administrateurs, depuis l'écran `/direction/utilisateurs`.
+
+À la création, la plateforme envoie automatiquement un **email d'invitation** à la personne concernée. Cet email contient un lien sécurisé permettant de définir son mot de passe et d'activer le compte. Le super administrateur peut également renvoyer l'invitation si le destinataire ne l'a pas reçue ou si le lien a expiré.
+
+<CardGroup cols={2}>
+  <Card title="Créer un compte" icon="user-plus">
+    Rendez-vous sur `/direction/utilisateurs` et cliquez sur **Nouvel utilisateur**. Renseignez le nom complet, l'email, le rôle et, le cas échéant, la division. L'invitation est envoyée automatiquement.
+  </Card>
+  <Card title="Suspendre un compte" icon="user-slash">
+    Depuis la même page, sélectionnez un utilisateur et choisissez **Suspendre**. Le compte est immédiatement désactivé. Un compte suspendu ne peut plus se connecter.
+  </Card>
+</CardGroup>
+
+<Info>
+  Le rôle `agent_saisie` donne accès uniquement au portail terrain (`/direction/terrain`) et à la saisie au nom des entreprises et ménages qui lui sont assignés. Un agent de saisie ne peut pas accéder aux écrans d'analyse, de gestion des campagnes ni aux paramètres de la plateforme.
+</Info>
