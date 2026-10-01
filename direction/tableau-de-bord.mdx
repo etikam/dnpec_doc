@@ -11,16 +11,16 @@ Le tableau de bord Direction est le poste de commande central de DNPEC Collecte.
 Quatre cartes KPI s'affichent en haut du tableau de bord et résument l'essentiel de l'activité de collecte. Chaque carte est cliquable et vous redirige directement vers le module correspondant.
 
 <CardGroup cols={2}>
-  <Card title="Entreprises validées" icon="building-2" href="/direction/gestion-entreprises">
+  <Card title="Entreprises validées" icon="building-2" href="direction/gestion-entreprises">
     Nombre total d'entreprises dont le dossier a été validé et qui participent activement aux campagnes de collecte. Cliquez pour accéder au répertoire complet.
   </Card>
-  <Card title="Inscriptions en attente" icon="clock" href="/direction/gestion-entreprises">
+  <Card title="Inscriptions en attente" icon="clock" href="direction/gestion-entreprises">
     Nombre de dossiers d'inscription reçus et en attente de traitement par la Direction. Un badge **À traiter** s'affiche dès qu'au moins un dossier est en file. Cliquez pour traiter les inscriptions.
   </Card>
-  <Card title="Soumissions à valider" icon="check-square" href="/direction/validations">
+  <Card title="Soumissions à valider" icon="check-square" href="direction/validations">
     Nombre de soumissions au statut **Soumise** en attente d'examen par un analyste. Un badge **Urgent** vous signale que des déclarations d'entreprises n'ont pas encore été traitées.
   </Card>
-  <Card title="Campagnes actives" icon="megaphone" href="/direction/campagnes">
+  <Card title="Campagnes actives" icon="megaphone" href="direction/campagnes">
     Nombre de campagnes dont le statut est **Active** à la date du jour. La carte affiche également le nombre de campagnes planifiées et une barre de progression du taux de validation global.
   </Card>
 </CardGroup>
@@ -40,7 +40,7 @@ Sous les KPI, deux graphiques vous donnent une lecture visuelle de l'activité d
 Lorsque le moteur d'analyses détecte des problèmes de qualité sur les données collectées — couverture insuffisante, variation sectorielle anormale, données manquantes — une bannière d'alerte apparaît automatiquement sous les KPI.
 
 <Note>
-  Les alertes analytiques sont calculées en temps réel à l'ouverture du tableau de bord. Cliquez sur **Voir dans Analyses** pour consulter le détail des alertes et prendre les mesures correctives appropriées dans le module `/direction/analyses/alertes`.
+  Les alertes analytiques sont calculées en temps réel à l'ouverture du tableau de bord. Cliquez sur **Voir dans Analyses** pour consulter le détail des alertes et prendre les mesures correctives appropriées dans le module Analyses.
 </Note>
 
 ## Campagnes en cours
@@ -52,14 +52,14 @@ Le panneau **Campagnes en cours** liste jusqu'à trois campagnes actuellement ac
 - le nombre de cibles totales, de soumissions validées et de soumissions en attente de validation ;
 - une barre de progression du taux de collecte.
 
-Cliquez sur une campagne pour accéder à sa fiche détaillée dans `/direction/campagnes/[id]`.
+Cliquez sur une campagne pour accéder à sa fiche détaillée dans le module [Campagnes](direction/campagnes).
 
 ## Activité récente
 
 La section **Activité récente** affiche un journal des dernières actions enregistrées sur la plateforme : création d'entreprises, modification de campagnes, validation de soumissions, publication de formulaires, etc. Chaque entrée indique l'auteur de l'action, le type d'opération et l'heure relative.
 
 <Note>
-  L'onglet **Activité récente** est réservé au super administrateur. Les analystes ne voient pas cette section sur leur tableau de bord.
+  La section **Activité récente** est réservée au super administrateur. Les analystes ne voient pas cette section sur leur tableau de bord.
 </Note>
 
 ## Actions rapides

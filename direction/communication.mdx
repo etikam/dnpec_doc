@@ -15,10 +15,10 @@ La plateforme prend en charge trois canaux de diffusion, que vous pouvez combine
     La notification apparaît directement dans le portail entreprise de chaque destinataire, dans l'espace `/portail/notifications`. Ce canal est **toujours disponible** et ne nécessite aucune configuration serveur supplémentaire.
   </Card>
   <Card title="Email" icon="envelope">
-    L'annonce est envoyée par email via Gmail SMTP à l'adresse de contact de chaque entreprise. Ce canal **nécessite une configuration serveur** (variables d'environnement SMTP). S'il n'est pas configuré, il sera grisé lors de la composition.
+    L'annonce est envoyée par email à l'adresse de contact de chaque entreprise. Ce canal **nécessite une configuration serveur**. S'il n'est pas configuré, il sera grisé lors de la composition.
   </Card>
   <Card title="SMS" icon="mobile">
-    L'annonce est envoyée par SMS via Twilio au numéro de téléphone enregistré pour chaque entreprise. Ce canal **nécessite une configuration serveur** (clés Twilio). S'il n'est pas configuré, il sera grisé lors de la composition.
+    L'annonce est envoyée par SMS au numéro de téléphone enregistré pour chaque entreprise. Ce canal **nécessite une configuration serveur**. S'il n'est pas configuré, il sera grisé lors de la composition.
   </Card>
 </CardGroup>
 
@@ -81,7 +81,7 @@ La Direction Nationale de la Prévision Économique et de la Conjoncture
 Ce message sera personnalisé pour chaque entreprise destinataire avec son nom et son NIF exacts.
 
 <Warning>
-  L'envoi par **Email** ou **SMS** n'est possible que si les canaux correspondants ont été configurés par l'administrateur système (variables d'environnement SMTP pour Gmail, clés d'API pour Twilio). Si un canal n'est pas configuré, il sera grisé dans le formulaire et les envois sur ce canal seront automatiquement ignorés. En cas de doute sur la configuration des canaux, contactez votre administrateur système.
+  L'envoi par **Email** ou **SMS** n'est possible que si ces canaux ont été activés par l'administrateur système. Si un canal n'est pas configuré, il sera grisé dans le formulaire et les envois sur ce canal seront automatiquement ignorés. En cas de doute sur la disponibilité des canaux, contactez votre administrateur système.
 </Warning>
 
 <Note>

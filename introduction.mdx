@@ -11,14 +11,10 @@ description: "DNPEC Collecte digitalise la collecte nationale des données écon
 La plateforme est organisée autour de deux espaces distincts, chacun conçu pour son public spécifique.
 
 <CardGroup cols={2}>
-  <Card title="Portail Entreprise" icon="building" href="/portail/inscription">
-    **Accessible sur `/portail/`**
-
+  <Card title="Portail Entreprise" icon="building" href="portail/inscription">
     Destiné aux entreprises et aux administrations publiques (BSD et SPD). Depuis cet espace, vous inscrivez votre structure, consultez les campagnes de collecte actives, remplissez et soumettez vos formulaires de déclaration, et suivez l'historique de vos soumissions.
   </Card>
-  <Card title="Portail Direction" icon="chart-line" href="/direction/">
-    **Accessible sur `/direction/`**
-
+  <Card title="Portail Direction" icon="chart-line" href="direction/tableau-de-bord">
     Réservé aux agents DNPEC (super_admin, analyste, agent_saisie). Depuis cet espace, vous gérez les campagnes, validez les inscriptions et les soumissions, effectuez des saisies terrain, configurez les formulaires et exportez les données pour l'analyse statistique.
   </Card>
 </CardGroup>
@@ -42,11 +38,11 @@ L'accès à la plateforme est gouverné par un système de rôles. Chaque rôle 
 
 | Rôle | Portail | Accès principal | Actions clés |
 |---|---|---|---|
-| `entreprise` | Portail Entreprise (`/portail/`) | Ses propres données uniquement | Inscription, soumission de déclarations, consultation de l'historique, réception de notifications |
-| `agent_saisie` | Portail Direction (`/direction/`) | Données d'une entreprise assignée | Saisie de soumissions au nom d'entreprises, accès terrain, consultation des formulaires |
-| `analyste` | Portail Direction (`/direction/`) | Toutes les données de collecte | Gestion des campagnes, validation des inscriptions et soumissions, analyses statistiques, exports |
-| `super_admin` | Portail Direction (`/direction/`) | Accès total à la plateforme | Tout ce que fait l'analyste, plus : gestion des utilisateurs, configuration des paramètres, consultation du journal d'audit |
+| `entreprise` | Portail Entreprise | Ses propres données uniquement | Inscription, soumission de déclarations, consultation de l'historique, réception de notifications |
+| `agent_saisie` | Portail Direction | Données d'une entreprise assignée | Saisie de soumissions au nom d'entreprises, accès terrain, consultation des formulaires |
+| `analyste` | Portail Direction | Toutes les données de collecte | Gestion des campagnes, validation des inscriptions et soumissions, analyses statistiques, exports |
+| `super_admin` | Portail Direction | Accès total à la plateforme | Tout ce que fait l'analyste, plus : gestion des utilisateurs, configuration des paramètres, consultation du journal d'audit |
 
 <Info>
-  Les comptes de type `entreprise` sont créés par auto-inscription sur `/inscription`. Les comptes DNPEC (`analyste`, `agent_saisie`, `super_admin`) sont créés et attribués par un super administrateur depuis le Portail Direction.
+  Les comptes de type `entreprise` sont créés par auto-inscription depuis la page d'inscription. Les comptes DNPEC (`analyste`, `agent_saisie`, `super_admin`) sont créés et attribués par un super administrateur depuis le Portail Direction.
 </Info>

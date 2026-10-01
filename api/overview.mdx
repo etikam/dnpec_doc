@@ -1,10 +1,10 @@
 ---
-title: "Vue d'ensemble de l'API REST DNPEC Collecte"
+title: "Vue d'ensemble de l'API REST DNPEC Collecte — Guide"
 sidebarTitle: "Vue d'ensemble"
 description: "L'API REST DNPEC Collecte expose les ressources de collecte économique sous /api/v1. Découvrez les conventions, la pagination et la gestion des erreurs."
 ---
 
-L'API REST DNPEC Collecte est le point d'entrée programmatique de la plateforme nationale de collecte de données économiques de la Direction Nationale de la Prévision Économique et de la Conjoncture (DNPEC). Elle vous permet d'intégrer la création de campagnes, la gestion des entreprises, la soumission de formulaires et l'export de données analytiques directement dans vos systèmes d'information. Toutes les ressources sont sécurisées par authentification JWT et Row Level Security.
+L'API REST DNPEC Collecte est le point d'entrée programmatique de la plateforme nationale de collecte de données économiques de la Direction Nationale de la Prévision Économique et de la Conjoncture (DNPEC). Elle vous permet d'intégrer la création de campagnes, la gestion des entreprises, la soumission de formulaires et l'export de données analytiques directement dans vos systèmes d'information. Toutes les ressources sont sécurisées par authentification JWT et des contrôles d'accès par rôle.
 
 ## URL de base
 
@@ -15,6 +15,20 @@ https://votre-domaine/api/v1
 ```
 
 Les chemins présentés dans cette documentation (par exemple `/campaigns` ou `/submissions`) sont relatifs à cette URL de base. Ainsi, l'endpoint de liste des campagnes est accessible à l'adresse complète `https://votre-domaine/api/v1/campaigns`.
+
+## Ressources disponibles
+
+L'API couvre les ressources suivantes, toutes préfixées par `/api/v1` :
+
+| Ressource | Endpoints principaux | Description |
+|---|---|---|
+| Entreprises | `GET /companies`, `POST /companies`, `GET /companies/registrations` | Répertoire des entreprises déclarantes |
+| Formulaires | `GET /forms` | Formulaires types disponibles par secteur |
+| Campagnes | `GET /campaigns`, `POST /campaigns`, `POST /campaigns/{id}/send` | Pilotage des campagnes de collecte |
+| Soumissions | `GET /submissions`, `POST /submissions`, `POST /submissions/{id}/validate`, `POST /submissions/{id}/reject` | Déclarations économiques des entreprises |
+| Exports | `GET /exports/analytiques`, `POST /exports` | Téléchargement des données validées multi-formats |
+| Rapports | `GET /rapports/note-conjoncture` | Export PDF des notes de conjoncture |
+| Audit | `GET /audit` | Journal des actions sensibles (super admin) |
 
 ## Spécification OpenAPI
 
@@ -42,30 +56,19 @@ curl https://votre-domaine/api/v1/health
 
 L'endpoint renvoie un objet JSON indiquant l'état du service, son nom et la version de l'API :
 
-<Tabs>
-  <Tab title="Succès (HTTP 200)">
-    ```json
-    {
-      "status": "ok",
-      "service": "dnpec-collecte",
-      "apiVersion": "v1"
-    }
-    ```
-  </Tab>
-  <Tab title="Erreur (HTTP 503)">
-    ```json
-    {
-      "status": "error"
-    }
-    ```
-  </Tab>
-</Tabs>
+```json
+{
+  "status": "ok",
+  "service": "dnpec-collecte",
+  "apiVersion": "v1"
+}
+```
 
-Utilisez cet endpoint dans vos sondes de liveness et readiness (Kubernetes, load balancers, outils de monitoring) pour détecter une indisponibilité sans consommer de quota authentifié.
+Utilisez cet endpoint dans vos sondes de disponibilité (outils de monitoring, load balancers) pour détecter une indisponibilité sans consommer de quota authentifié.
 
 ## Pagination
 
-Tous les endpoints qui retournent des listes supportent la pagination par curseur de page. Passez les paramètres suivants en query string pour naviguer dans les résultats.
+Tous les endpoints qui retournent des listes supportent la pagination par numéro de page. Passez les paramètres suivants en query string pour naviguer dans les résultats.
 
 <ParamField query="page" type="integer">
   Numéro de page à récupérer (défaut : 1). La numérotation commence à 1.
@@ -91,7 +94,7 @@ Chaque réponse paginée enveloppe les données dans un objet contenant un champ
 Le champ `total` représente le nombre total d'enregistrements correspondant à votre requête (tous filtres appliqués), indépendamment de la page courante. Utilisez-le pour calculer le nombre de pages : `Math.ceil(total / limit)`.
 
 <Tip>
-  Pour récupérer tous les résultats en un minimum d'appels, passez `limit=200`. Pour les exports massifs, privilégiez l'endpoint `/exports` qui génère un fichier de manière asynchrone.
+  Pour récupérer tous les résultats en un minimum d'appels, passez `limit=200`. Pour les exports massifs, privilégiez l'endpoint `/exports/analytiques` (téléchargement synchrone) ou `POST /exports` (traitement asynchrone pour les grands volumes).
 </Tip>
 
 ## Format des erreurs
@@ -133,14 +136,14 @@ Le tableau suivant récapitule les codes d'erreur que vous pouvez rencontrer et 
 
 ## Sécurité des données
 
-L'API DNPEC Collecte applique le principe du moindre privilège à chaque niveau de la stack. Chaque requête authentifiée est soumise au Row Level Security (RLS) de la base de données : les politiques RLS garantissent que vous ne pouvez lire, modifier ou supprimer que les enregistrements pour lesquels votre compte est explicitement autorisé.
+L'API DNPEC Collecte applique le principe du moindre privilège à chaque niveau. Chaque requête authentifiée est soumise à des contrôles d'accès automatiques : vous ne pouvez lire, modifier ou supprimer que les enregistrements pour lesquels votre compte est explicitement autorisé.
 
 <CardGroup cols={2}>
   <Card title="Isolation par entreprise" icon="building">
     Un compte entreprise ne voit que ses propres soumissions et les campagnes qui lui ont été affectées. Il ne peut pas accéder aux données d'une autre entreprise.
   </Card>
   <Card title="Contrôle par rôle" icon="shield-halved">
-    Les analystes DNPEC et les super admins disposent d'une visibilité élargie définie par leurs rôles. Toute tentative d'accès hors périmètre retourne une erreur `403 forbidden`.
+    Les analystes DNPEC et les super admins disposent d'une visibilité élargie définie par leurs rôles. Toute tentative d'accès hors périmètre retourne une erreur `403 Forbidden`.
   </Card>
 </CardGroup>
 

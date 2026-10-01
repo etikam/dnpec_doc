@@ -1,10 +1,14 @@
 ---
-title: "API Exports analytiques DNPEC — multi-formats"
+title: "API Exports analytiques DNPEC — Excel, CSV, STATA, R"
 sidebarTitle: "Exports"
-description: "GET /api/v1/exports/analytiques — téléchargez les données économiques validées en Excel, CSV, PDF, STATA, EViews ou R avec filtres secteur et période."
+description: "GET /api/v1/exports/analytiques — téléchargez les données validées en Excel, CSV, STATA, EViews ou R. Export PDF des notes de conjoncture inclus."
 ---
 
 L'API d'exports analytiques vous permet de télécharger les données économiques validées issues des campagnes de collecte DNPEC dans le format de votre choix. Que vous travailliez sous Excel, dans un logiciel d'économétrie comme STATA ou EViews, ou dans un environnement statistique R, un seul endpoint couvre tous vos besoins avec des filtres secteur et période.
+
+<Note>
+  Ces endpoints sont réservés aux rôles `analyste` et `super_admin`. Les comptes entreprise n'ont pas accès aux exports analytiques.
+</Note>
 
 ---
 
@@ -15,7 +19,7 @@ Génère et télécharge un fichier d'export synchrone contenant l'ensemble des 
 ### Paramètres de requête
 
 <ParamField query="format" type="string" required>
-  Format du fichier exporté. Valeurs acceptées : `xlsx`, `csv`, `json`, `pdf`, `docx`, `stata`, `eviews`, `r`.
+  Format du fichier exporté. Valeurs acceptées : `xlsx`, `csv`, `pdf`, `docx`, `stata`, `eviews`, `r`.
 </ParamField>
 
 <ParamField query="year" type="integer" required>
@@ -27,7 +31,23 @@ Génère et télécharge un fichier d'export synchrone contenant l'ensemble des 
 </ParamField>
 
 <ParamField query="sector" type="string">
-  Nom ou code du secteur d'activité pour restreindre l'export à un périmètre sectoriel précis (ex. `Mines`, `Agriculture`). Si omis, l'export couvre tous les secteurs.
+  Identifiant ou nom du secteur d'activité pour restreindre l'export à un périmètre sectoriel précis (ex. `Mines`, `Agriculture`). Si omis, l'export couvre tous les secteurs.
+</ParamField>
+
+<ParamField query="sectors" type="string">
+  Liste de plusieurs identifiants de secteurs séparés par des virgules, pour exporter plusieurs secteurs simultanément (ex. `Mines,Agriculture`).
+</ParamField>
+
+<ParamField query="campaign" type="string">
+  UUID d'une campagne spécifique. Restreint l'export aux données collectées dans le cadre de cette campagne.
+</ParamField>
+
+<ParamField query="region" type="string">
+  Identifiant de région pour filtrer les données par zone géographique.
+</ParamField>
+
+<ParamField query="indicator" type="string">
+  Clé d'un indicateur spécifique pour restreindre l'export à cet indicateur uniquement.
 </ParamField>
 
 ### Exemples de requêtes
@@ -40,6 +60,16 @@ Génère et télécharge un fichier d'export synchrone contenant l'ensemble des 
     curl 'https://votre-domaine/api/v1/exports/analytiques?format=xlsx&year=2025&month=1' \
       -H 'Authorization: Bearer TOKEN' \
       -o export.xlsx
+    ```
+  </Tab>
+
+  <Tab title="CSV">
+    Téléchargez les données au format CSV pour une intégration dans un tableur ou un outil de traitement de données.
+
+    ```bash
+    curl 'https://votre-domaine/api/v1/exports/analytiques?format=csv&year=2025&month=1&sector=Agriculture' \
+      -H 'Authorization: Bearer TOKEN' \
+      -o export-agriculture.csv
     ```
   </Tab>
 
@@ -88,11 +118,66 @@ L'API retourne directement le fichier binaire avec les en-têtes HTTP approprié
   Pour les formats `stata`, `eviews` et `r`, la réponse est une archive `.zip` contenant deux fichiers : le fichier de données dans le format natif du logiciel, et un script d'import commenté pour charger les données en une seule commande.
 </Note>
 
+### Codes d'erreur spécifiques
+
+| Statut HTTP | Signification | Action |
+|---|---|---|
+| `400` | Paramètre manquant ou invalide (ex. format non reconnu, mois hors plage) | Vérifiez les valeurs des paramètres `format`, `year` et `month` |
+| `401` | Token d'authentification absent ou expiré | Renouvelez votre token via la plateforme |
+| `403` | Accès réservé aux analystes | Vérifiez votre rôle auprès de l'administrateur DNPEC |
+| `404` | Aucune donnée validée pour le périmètre demandé | Élargissez les filtres ou vérifiez que des soumissions ont été validées pour cette période |
+
+---
+
+## GET /api/v1/rapports/note-conjoncture
+
+Génère et télécharge la note de conjoncture au format PDF pour un rapport d'analyse existant. Ce rapport est produit directement depuis les données analytiques validées et inclut les indicateurs sectoriels, les tendances et les commentaires de l'analyste.
+
+<Note>
+  Cet endpoint est réservé aux rôles `analyste` et `super_admin`.
+</Note>
+
+### Paramètres de requête
+
+<ParamField query="report_id" type="string" required>
+  UUID du rapport d'analyse à exporter en PDF. L'identifiant est disponible dans l'interface de gestion des analyses ou via l'API d'analyses.
+</ParamField>
+
+### Exemple de requête
+
+```bash
+curl 'https://votre-domaine/api/v1/rapports/note-conjoncture?report_id=f1e2d3c4-b5a6-7890-cdef-012345678901' \
+  -H 'Authorization: Bearer TOKEN' \
+  -o note-conjoncture.pdf
+```
+
+### Réponse
+
+L'API retourne le fichier PDF directement en réponse, avec un nom de fichier généré automatiquement selon le secteur, la période et le statut du rapport :
+
+| En-tête | Valeur exemple |
+|---|---|
+| `Content-Type` | `application/pdf` |
+| `Content-Disposition` | `inline; filename="note-conjoncture-mines-2025-01-publie.pdf"` |
+| `Cache-Control` | `private, no-store` |
+
+Le nom du fichier suit le format : `note-conjoncture-{secteur}-{année}-{mois}-{statut}.pdf`. Le statut peut être `publie`, `relu` ou `brouillon` selon l'état d'avancement du rapport.
+
+### Codes d'erreur spécifiques
+
+| Statut HTTP | Signification | Action |
+|---|---|---|
+| `400` | UUID de rapport invalide ou manquant | Vérifiez la valeur du paramètre `report_id` |
+| `401` | Token d'authentification absent ou expiré | Renouvelez votre token via la plateforme |
+| `403` | Accès réservé aux analystes | Vérifiez votre rôle auprès de l'administrateur DNPEC |
+| `404` | Rapport introuvable | Vérifiez que l'identifiant correspond à un rapport existant |
+| `500` | Échec de la génération du PDF | Réessayez ou contactez le support DNPEC |
+
 ---
 
 ## POST /api/v1/exports
 
-Crée une demande d'export asynchrone pour les grands volumes de données. L'API enregistre le job immédiatement et retourne un identifiant de suivi. Le fichier généré sera disponible dans l'historique des exports accessible depuis `/direction/exports` une fois le traitement terminé.
+Crée une demande d'export asynchrone pour les grands volumes de données. L'API enregistre le job immédiatement et retourne un identifiant de suivi. Le fichier généré sera disponible dans l'historique des exports de la plateforme une fois le traitement terminé.
 
 ### Exemple de requête
 
@@ -117,5 +202,5 @@ curl -X POST 'https://votre-domaine/api/v1/exports' \
 ```
 
 <Info>
-  Utilisez cet endpoint pour les exports de grands volumes couvrant plusieurs secteurs ou plusieurs mois. Le fichier sera disponible dans l'historique des exports de `/direction/exports` une fois le job terminé. Vous pouvez interroger le statut du job via son `job_id` pour savoir quand le téléchargement est prêt.
+  Utilisez cet endpoint pour les exports de grands volumes couvrant plusieurs secteurs ou plusieurs mois. Le fichier sera disponible dans l'historique des exports de la plateforme une fois le job terminé. Vous pouvez interroger le statut du job via son `job_id` pour savoir quand le téléchargement est prêt.
 </Info>

@@ -4,7 +4,7 @@ sidebarTitle: "Campagnes"
 description: "Créez des campagnes de collecte mensuelles, ponctuelles ou régionales, configurez les cibles et lancez l'envoi vers les entreprises et administrations."
 ---
 
-Les campagnes sont le mécanisme central de DNPEC Collecte : elles définissent quelles entités doivent déclarer quelles données, sur quelle période et selon quel formulaire. Chaque campagne matérialise un ensemble de cibles (`campaign_targets`) et déclenche l'envoi automatique de notifications aux entreprises et administrations concernées. En tant qu'analyste ou super administrateur, vous créez, configurez et pilotez les campagnes tout au long de leur cycle de vie.
+Les campagnes sont le mécanisme central de DNPEC Collecte : elles définissent quelles entités doivent déclarer quelles données, sur quelle période et selon quel formulaire. Chaque campagne matérialise un ensemble de cibles et déclenche l'envoi automatique de notifications aux entreprises et administrations concernées. En tant qu'analyste ou super administrateur, vous créez, configurez et pilotez les campagnes tout au long de leur cycle de vie.
 
 ## Types de campagnes
 
@@ -12,23 +12,23 @@ La plateforme distingue trois types de campagnes, adaptés aux différents besoi
 
 <CardGroup cols={3}>
   <Card title="Mensuelle" icon="calendar">
-    Collecte régulière auprès des entreprises sectorielles. Vous pouvez optionnellement y inclure les administrations publiques BSD et/ou SPD. Les campagnes mensuelles peuvent être organisées en **série annuelle** : la plateforme génère automatiquement 12 cycles enfants (un par mois) à partir d'une campagne racine (`is_series_root`), chacun avec ses propres dates d'ouverture et de clôture.
+    Collecte régulière auprès des entreprises sectorielles. Vous pouvez optionnellement y inclure les administrations publiques BSD et/ou SPD. Les campagnes mensuelles peuvent être organisées en **série annuelle** : la plateforme génère automatiquement 12 cycles enfants (un par mois) à partir d'une campagne racine, chacun avec ses propres dates d'ouverture et de clôture.
   </Card>
   <Card title="Ponctuelle" icon="zap">
     Campagne hors calendrier, à usage unique, pour des besoins ad-hoc (enquête ciblée, collecte de rattrapage, etc.). Les cibles sont librement configurables : vous pouvez cibler des entreprises et/ou des administrations publiques, tous secteurs confondus ou un sous-ensemble spécifique.
   </Card>
   <Card title="Régionale (terrain)" icon="map-pin">
-    Collecte auprès de **ménages** et de **groupements** localisés dans des régions spécifiques de Guinée. Des agents terrain sont assignés à chaque région lors de la création. Ce type de campagne n'inclut ni entreprises sectorielles ni administrations publiques — il cible exclusivement les unités domestiques et groupements via `campaign_household_targets` et `campaign_groupement_targets`.
+    Collecte auprès de **ménages** et de **groupements** localisés dans des régions spécifiques de Guinée. Des agents terrain sont assignés à chaque région lors de la création. Ce type de campagne n'inclut ni entreprises sectorielles ni administrations publiques — il cible exclusivement les unités domestiques et groupements dans les territoires sélectionnés.
   </Card>
 </CardGroup>
 
 ## Créer une campagne
 
-Suivez ces étapes pour créer et configurer une nouvelle campagne depuis le module `/direction/campagnes`.
+Suivez ces étapes pour créer et configurer une nouvelle campagne depuis le module Campagnes.
 
 <Steps>
   <Step title="Ouvrez le formulaire de création">
-    Accédez à `/direction/campagnes` et cliquez sur **Nouvelle campagne**. Une fenêtre de configuration s'ouvre avec les trois types disponibles.
+    Accédez à la section **Campagnes** du menu Direction et cliquez sur **Nouvelle campagne**. Une fenêtre de configuration s'ouvre avec les trois types disponibles.
   </Step>
   <Step title="Choisissez le type de campagne">
     Sélectionnez **Mensuelle**, **Ponctuelle** ou **Régionale (terrain)** selon le périmètre de collecte souhaité. Le formulaire s'adapte dynamiquement au type choisi.
@@ -37,14 +37,14 @@ Suivez ces étapes pour créer et configurer une nouvelle campagne depuis le mod
     Renseignez le **titre** de la campagne (ex. : *Collecte Mines — Janvier 2025*), la **période de référence** (ex. : *Janvier 2025*), la **date d'ouverture** et la **date de clôture** de la fenêtre de collecte.
   </Step>
   <Step title="Sélectionnez le secteur et le formulaire">
-    Pour une campagne mensuelle ou ponctuelle, choisissez un ou plusieurs **secteurs** économiques cibles. La plateforme résout automatiquement le formulaire publié correspondant à chaque secteur via `campaign_respondent_forms`. Pour une campagne régionale, sélectionnez le **formulaire terrain** approprié.
+    Pour une campagne mensuelle ou ponctuelle, choisissez un ou plusieurs **secteurs** économiques cibles. La plateforme résout automatiquement le formulaire publié correspondant à chaque secteur. Pour une campagne régionale, sélectionnez le **formulaire terrain** approprié.
   </Step>
   <Step title="Configurez les options spécifiques">
     - **Campagne mensuelle** : cochez **Inclure BSD** et/ou **Inclure SPD** pour étendre la collecte aux administrations publiques. Activez **Générer les cycles mensuels** pour créer automatiquement les 12 cycles de l'année.
     - **Campagne régionale** : sélectionnez les **régions ciblées** et assignez des **agents terrain** à chacune d'elles.
   </Step>
   <Step title="Sauvegardez en brouillon">
-    Cliquez **Enregistrer**. La campagne est créée avec le statut **Brouillon** (`draft`). Vous pouvez la modifier librement avant de l'envoyer.
+    Cliquez **Enregistrer**. La campagne est créée avec le statut **Brouillon**. Vous pouvez la modifier librement avant de l'envoyer.
   </Step>
 </Steps>
 
@@ -54,21 +54,21 @@ Une fois la campagne configurée et validée, lancez son envoi pour notifier tou
 
 <Steps>
   <Step title="Ouvrez la fiche campagne">
-    Depuis `/direction/campagnes`, cliquez sur la campagne en statut **Brouillon** pour accéder à sa fiche détaillée (`/direction/campagnes/[id]`).
+    Depuis la liste des campagnes, cliquez sur la campagne en statut **Brouillon** pour accéder à sa fiche détaillée.
   </Step>
   <Step title="Déclenchez l'envoi">
-    Cliquez sur le bouton **Envoyer**. Le système résout et matérialise immédiatement l'ensemble des cibles (`campaign_targets`) pour toutes les entreprises et administrations concernées.
+    Cliquez sur le bouton **Envoyer**. Le système résout et matérialise immédiatement l'ensemble des cibles pour toutes les entreprises et administrations concernées.
   </Step>
   <Step title="Notifications automatiques">
     Des notifications d'ouverture sont générées et envoyées automatiquement à chaque entité ciblée via les canaux configurés (plateforme, email, SMS). Les entreprises voient la campagne apparaître sur leur espace portail.
   </Step>
   <Step title="Activation">
-    Le statut de la campagne passe à **Planifiée** (`scheduled`) si la date d'ouverture est dans le futur, ou directement à **Active** (`active`) si la fenêtre de collecte est déjà ouverte.
+    Le statut de la campagne passe à **Planifiée** si la date d'ouverture est dans le futur, ou directement à **Active** si la fenêtre de collecte est déjà ouverte.
   </Step>
 </Steps>
 
 <Info>
-  Les relances sont envoyées automatiquement avant la date de clôture pour les entités n'ayant pas encore soumis leur déclaration. Ce mécanisme est géré par le cron mensuel (`/api/cron/monthly-campaigns`) et ne nécessite aucune action manuelle de votre part.
+  Les relances sont envoyées automatiquement avant la date de clôture pour les entités n'ayant pas encore soumis leur déclaration. Ce mécanisme est entièrement automatisé et ne nécessite aucune action manuelle de votre part.
 </Info>
 
 ## Cycle de vie d'une campagne
@@ -77,14 +77,14 @@ Chaque campagne transite par les statuts suivants, dans un ordre croissant et no
 
 | Statut | Description | Déclencheur |
 |---|---|---|
-| **Brouillon** (`draft`) | Campagne en cours de configuration, non visible par les déclarants. | Création initiale |
-| **Planifiée** (`scheduled`) | Campagne envoyée, en attente de la date d'ouverture. | Clic sur **Envoyer** |
-| **Active** (`active`) | Fenêtre de collecte ouverte. Les déclarants peuvent soumettre. | Date d'ouverture atteinte |
-| **Clôturée** (`closed`) | Fenêtre de collecte fermée. Plus aucune nouvelle soumission possible. | Date de clôture atteinte ou clôture manuelle |
-| **Archivée** (`archived`) | Campagne conservée à titre historique, masquée des listes actives. | Action manuelle |
+| **Brouillon** | Campagne en cours de configuration, non visible par les déclarants. | Création initiale |
+| **Planifiée** | Campagne envoyée, en attente de la date d'ouverture. | Clic sur **Envoyer** |
+| **Active** | Fenêtre de collecte ouverte. Les déclarants peuvent soumettre. | Date d'ouverture atteinte |
+| **Clôturée** | Fenêtre de collecte fermée. Plus aucune nouvelle soumission possible. | Date de clôture atteinte ou clôture manuelle |
+| **Archivée** | Campagne conservée à titre historique, masquée des listes actives. | Action manuelle |
 
-Pour les **séries mensuelles**, la campagne racine (`is_series_root = true`) reste en statut **Brouillon** et sert de conteneur ; ce sont les 12 cycles enfants qui transitent individuellement par les statuts ci-dessus.
+Pour les **séries mensuelles**, la campagne racine reste en statut **Brouillon** et sert de conteneur ; ce sont les 12 cycles enfants qui transitent individuellement par les statuts ci-dessus.
 
 ## Calendrier des campagnes
 
-Depuis le tableau de bord (`/direction/dashboard`), le panneau **Actions rapides** vous donne accès au **Calendrier de collecte**. Ce calendrier affiche visuellement toutes les campagnes planifiées et actives sur l'année, avec leur type, leur secteur et leur statut. Utilisez-le pour planifier de nouvelles campagnes sans créer de chevauchements sur les mêmes secteurs.
+Depuis le [tableau de bord](direction/tableau-de-bord), le panneau **Actions rapides** vous donne accès au **Calendrier de collecte**. Ce calendrier affiche visuellement toutes les campagnes planifiées et actives sur l'année, avec leur type, leur secteur et leur statut. Utilisez-le pour planifier de nouvelles campagnes sans créer de chevauchements sur les mêmes secteurs.

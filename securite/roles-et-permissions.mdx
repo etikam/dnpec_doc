@@ -4,13 +4,13 @@ sidebarTitle: "Permissions"
 description: "Référence complète des permissions par rôle sur DNPEC Collecte : ce que chaque profil peut consulter, créer, modifier ou administrer."
 ---
 
-DNPEC Collecte applique un système de contrôle d'accès basé sur les rôles (RBAC) : chaque compte est associé à un profil qui détermine précisément les fonctionnalités accessibles, les données visibles et les actions autorisées. Ce système est appliqué à deux niveaux — dans l'interface et directement dans la base de données via Row Level Security (RLS) — ce qui garantit qu'aucun utilisateur ne peut accéder à des données qui ne lui sont pas destinées, même en cas d'erreur dans l'interface.
+DNPEC Collecte applique un système de contrôle d'accès basé sur les rôles (RBAC) : chaque compte est associé à un profil qui détermine précisément les fonctionnalités accessibles, les données visibles et les actions autorisées. Ce contrôle est appliqué à la fois dans l'interface et au niveau des données, ce qui garantit qu'aucun utilisateur ne peut accéder à des informations qui ne lui sont pas destinées, même en cas d'erreur de navigation.
 
 ## Tableau de référence
 
 Le tableau ci-dessous récapitule toutes les actions disponibles sur la plateforme et les rôles habilités à les effectuer. Utilisez-le pour identifier rapidement ce que chaque profil peut ou ne peut pas faire.
 
-| Action | `entreprise` | `agent_saisie` | `analyste` | `super_admin` |
+| Action | Entreprise | Agent de saisie | Analyste | Super administrateur |
 |---|:---:|:---:|:---:|:---:|
 | S'inscrire sur la plateforme | ✓ | — | — | — |
 | Soumettre une déclaration | ✓ | ✓ | — | — |
@@ -30,13 +30,13 @@ Le tableau ci-dessous récapitule toutes les actions disponibles sur la platefor
 
 ## Gestion des comptes DNPEC
 
-Les comptes du personnel DNPEC ne sont jamais créés par auto-inscription. Seul un super administrateur peut créer des comptes pour les analystes (`analyste`) et les agents de saisie (`agent_saisie`), ainsi que pour d'autres super administrateurs, depuis l'écran `/direction/utilisateurs`.
+Les comptes du personnel DNPEC ne sont jamais créés par auto-inscription. Seul un super administrateur peut créer des comptes pour les analystes et les agents de saisie, ainsi que pour d'autres super administrateurs, depuis l'écran de gestion des utilisateurs.
 
 À la création, la plateforme envoie automatiquement un **email d'invitation** à la personne concernée. Cet email contient un lien sécurisé permettant de définir son mot de passe et d'activer le compte. Le super administrateur peut également renvoyer l'invitation si le destinataire ne l'a pas reçue ou si le lien a expiré.
 
 <CardGroup cols={2}>
   <Card title="Créer un compte" icon="user-plus">
-    Rendez-vous sur `/direction/utilisateurs` et cliquez sur **Nouvel utilisateur**. Renseignez le nom complet, l'email, le rôle et, le cas échéant, la division. L'invitation est envoyée automatiquement.
+    Rendez-vous sur l'écran de gestion des utilisateurs et cliquez sur **Nouvel utilisateur**. Renseignez le nom complet, l'email, le rôle et, le cas échéant, la division. L'invitation est envoyée automatiquement.
   </Card>
   <Card title="Suspendre un compte" icon="user-slash">
     Depuis la même page, sélectionnez un utilisateur et choisissez **Suspendre**. Le compte est immédiatement désactivé. Un compte suspendu ne peut plus se connecter.
@@ -44,5 +44,5 @@ Les comptes du personnel DNPEC ne sont jamais créés par auto-inscription. Seul
 </CardGroup>
 
 <Info>
-  Le rôle `agent_saisie` donne accès uniquement au portail terrain (`/direction/terrain`) et à la saisie au nom des entreprises et ménages qui lui sont assignés. Un agent de saisie ne peut pas accéder aux écrans d'analyse, de gestion des campagnes ni aux paramètres de la plateforme.
+  Le rôle **Agent de saisie** donne accès uniquement au portail terrain et à la saisie au nom des entreprises et ménages qui lui sont assignés. Un agent de saisie ne peut pas accéder aux écrans d'analyse, de gestion des campagnes ni aux paramètres de la plateforme.
 </Info>

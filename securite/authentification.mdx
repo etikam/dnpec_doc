@@ -4,7 +4,7 @@ sidebarTitle: "Authentification"
 description: "Apprenez à vous connecter à DNPEC Collecte, réinitialiser votre mot de passe, confirmer votre email et sécuriser votre compte déclarant."
 ---
 
-DNPEC Collecte utilise Supabase Auth pour sécuriser toutes les connexions : chaque accès est protégé par un couple email et mot de passe, des jetons de session JWT à courte durée de vie, et une isolation stricte des données par profil. Aucun compte n'est accessible sans vérification préalable de l'adresse email.
+DNPEC Collecte protège toutes les connexions par un couple email et mot de passe. Chaque compte est strictement isolé : un utilisateur ne peut accéder qu'aux données liées à son profil. Aucun compte n'est accessible sans vérification préalable de l'adresse email.
 
 ## Se connecter
 
@@ -18,11 +18,11 @@ Rendez-vous sur la page de connexion et identifiez-vous pour accéder à votre p
     Entrez votre **adresse email** et votre **mot de passe** dans les champs correspondants.
   </Step>
   <Step title="Cliquez sur « Se connecter »">
-    Validez le formulaire en cliquant sur le bouton **Se connecter**. La plateforme vérifie vos identifiants auprès de Supabase Auth.
+    Validez le formulaire en cliquant sur le bouton **Se connecter**. La plateforme vérifie vos identifiants et vous connecte à votre session.
   </Step>
   <Step title="Vous êtes redirigé vers votre portail">
-    - Si votre compte est de type **entreprise** ou **administration publique**, vous arrivez sur `/portail/dashboard`.
-    - Si votre compte est un compte **DNPEC** (analyste, agent de saisie ou super administrateur), vous arrivez sur `/direction/dashboard`.
+    - Si votre compte est de type **entreprise** ou **administration publique**, vous arrivez sur votre tableau de bord déclarant.
+    - Si votre compte est un compte **DNPEC** (analyste, agent de saisie ou super administrateur), vous arrivez sur le tableau de bord de la direction.
   </Step>
 </Steps>
 
@@ -57,9 +57,9 @@ Si vous avez oublié votre mot de passe, vous pouvez en créer un nouveau à tou
 
 ## Invitation DNPEC
 
-Les comptes du personnel DNPEC (analystes, agents de saisie, super administrateurs) ne sont **pas créés par auto-inscription**. Seul un super administrateur peut créer ces comptes depuis `/direction/utilisateurs`.
+Les comptes du personnel DNPEC (analystes, agents de saisie, super administrateurs) ne sont **pas créés par auto-inscription**. Seul un super administrateur peut créer ces comptes depuis l'écran de gestion des utilisateurs.
 
-Lorsqu'un super administrateur crée votre compte, la plateforme vous envoie automatiquement un **email d'invitation**. Cet email contient un lien sécurisé et à usage unique. Cliquez sur ce lien pour accéder à la page de création de mot de passe, choisissez un mot de passe robuste, puis confirmez. Votre compte est immédiatement actif.
+Lorsqu'un super administrateur crée votre compte, votre administrateur vous envoie un **email d'invitation**. Cliquez sur le lien contenu dans cet email pour accéder à la page de définition de mot de passe, choisissez un mot de passe robuste, puis confirmez. Votre compte est immédiatement actif.
 
 <Note>
   Si vous n'avez pas reçu votre email d'invitation, demandez à votre super administrateur DNPEC de vous le renvoyer depuis l'écran de gestion des utilisateurs.

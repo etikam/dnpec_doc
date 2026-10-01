@@ -4,7 +4,7 @@ sidebarTitle: "Paramètres"
 description: "Consultez et modifiez les paramètres de la plateforme DNPEC Collecte : seuils qualité, canaux de notification, gestion des utilisateurs et configuration globale."
 ---
 
-La page `/direction/parametres` centralise tous les réglages globaux de la plateforme DNPEC Collecte. Ces paramètres contrôlent le comportement du moteur de contrôle qualité, les canaux de notification sortants et les seuils d'alerte analytique. Ils sont stockés dans la table `system_settings` et s'appliquent immédiatement à toutes les campagnes actives dès leur modification. L'accès à cette page est strictement réservé au rôle `super_admin`.
+La page **Paramètres** centralise tous les réglages globaux de la plateforme DNPEC Collecte. Ces paramètres contrôlent le comportement du moteur de contrôle qualité, les canaux de notification sortants et les seuils d'alerte analytique. Toute modification s'applique immédiatement à toutes les campagnes actives. L'accès à cette page est strictement réservé au super administrateur.
 
 ## Paramètres disponibles
 
@@ -25,55 +25,43 @@ Les réglages sont organisés en trois catégories. Développez chacune pour con
 </Accordion>
 
 <Accordion title="Canaux de notification">
-  DNPEC Collecte supporte trois canaux de notification sortants. Le canal **plateforme** (`in_app`) est toujours actif. Les canaux **email** et **SMS** nécessitent une configuration serveur préalable.
+  DNPEC Collecte supporte trois canaux de notification sortants. Le canal **plateforme** (notifications dans l'application) est toujours actif. Les canaux **email** et **SMS** nécessitent une configuration préalable par votre administrateur système.
 
   <Tabs>
-    <Tab title="Email (Gmail SMTP)">
-      Le canal email utilise Gmail SMTP via Nodemailer. Pour l'activer, les variables d'environnement suivantes doivent être renseignées sur le serveur :
+    <Tab title="Email">
+      Le canal email permet d'envoyer des notifications aux adresses enregistrées sur la plateforme : ouvertures de campagne, relances, confirmations de validation et annonces de la direction.
 
-      | Variable | Description |
-      |---|---|
-      | `GMAIL_USER` | Adresse Gmail expéditrice (ex. `noreply@dnpec.gov.gn`) |
-      | `GMAIL_APP_PASSWORD` | Mot de passe d'application Gmail (généré dans les paramètres de sécurité Google) |
-      | `EMAIL_FROM_NAME` | Nom affiché dans l'en-tête de l'email expéditeur |
-
-      Une fois les variables renseignées, activez le canal depuis `/direction/parametres`. La plateforme l'utilise pour les notifications d'ouverture de campagne, les relances et les annonces de communication.
+      Ce canal nécessite une configuration email réalisée par votre administrateur système. Une fois ce paramétrage effectué, activez le canal depuis la page **Paramètres**. Si le canal email apparaît comme indisponible, contactez votre administrateur système pour qu'il procède à la configuration nécessaire.
     </Tab>
-    <Tab title="SMS (Twilio)">
-      Le canal SMS s'appuie sur l'API Twilio. Pour l'activer, renseignez les trois variables suivantes sur le serveur :
+    <Tab title="SMS">
+      Le canal SMS permet d'envoyer des alertes courtes sur les numéros de téléphone mobile enregistrés : relances de campagne et annonces ciblées.
 
-      | Variable | Description |
-      |---|---|
-      | `TWILIO_ACCOUNT_SID` | Identifiant de compte Twilio |
-      | `TWILIO_AUTH_TOKEN` | Jeton d'authentification Twilio |
-      | `TWILIO_FROM_NUMBER` | Numéro d'expédition Twilio au format international (ex. `+22460000000`) |
-
-      Une fois configuré, activez le canal depuis `/direction/parametres`. Les SMS sont envoyés lors des relances de campagne et des annonces ciblées.
+      Ce canal nécessite une configuration de passerelle SMS réalisée par votre administrateur système. Une fois ce paramétrage effectué, activez le canal depuis la page **Paramètres**. Si le canal SMS apparaît comme indisponible, contactez votre administrateur système pour qu'il procède à la configuration nécessaire.
 
       <Note>
-        La publication d'une annonce sur le canal Email ou SMS est bloquée si la configuration serveur correspondante est absente. Vérifiez que les variables sont correctement renseignées avant d'activer ces canaux.
+        La publication d'une annonce sur le canal Email ou SMS est bloquée si la configuration correspondante n'a pas été effectuée par l'administrateur système. Vérifiez l'état des canaux dans la page **Paramètres** avant d'envoyer une communication.
       </Note>
     </Tab>
     <Tab title="Plateforme (in-app)">
-      Le canal plateforme est toujours actif et ne nécessite aucune configuration. Les notifications in-app sont insérées directement dans la table `notifications` et affichées dans le centre de notifications de chaque utilisateur concerné. Ce canal est utilisé pour toutes les alertes temps réel : nouvelles soumissions, inscriptions en attente, alertes qualité et annonces de la direction.
+      Le canal plateforme est toujours actif et ne nécessite aucune configuration. Les notifications sont affichées directement dans le centre de notifications de chaque utilisateur concerné. Ce canal est utilisé pour toutes les alertes en temps réel : nouvelles soumissions, inscriptions en attente, alertes qualité et annonces de la direction.
     </Tab>
   </Tabs>
 </Accordion>
 
 <Accordion title="Gestion des secteurs">
-  La liste des secteurs économiques actifs est administrée depuis `/direction/secteurs`. Vous pouvez y activer ou désactiver un secteur selon les priorités de collecte de la période en cours.
+  La liste des secteurs économiques actifs est administrée depuis la page **Secteurs**. Vous pouvez y activer ou désactiver un secteur selon les priorités de collecte de la période en cours.
 
   - Un secteur **actif** apparaît dans les formulaires d'inscription entreprise et peut être ciblé par les campagnes.
   - Un secteur **désactivé** n'est plus proposé à l'inscription ni aux nouvelles campagnes, mais les données historiques et les soumissions existantes sont conservées.
 
   <Tip>
-    Désactivez un secteur uniquement si vous êtes certain qu'aucune campagne en cours ne le cible. Vérifiez d'abord la liste des campagnes actives depuis `/direction/campagnes`.
+    Désactivez un secteur uniquement si vous êtes certain qu'aucune campagne en cours ne le cible. Vérifiez d'abord la liste des campagnes actives depuis la page [Campagnes](/direction/campagnes).
   </Tip>
 </Accordion>
 
 ## Gestion des utilisateurs DNPEC
 
-L'écran `/direction/utilisateurs` vous permet de créer, modifier et désactiver les comptes du personnel DNPEC. Il affiche tous les profils dont le rôle est différent de `entreprise`, triés par date de création décroissante.
+L'écran de gestion des utilisateurs vous permet de créer, modifier et désactiver les comptes du personnel DNPEC. Il affiche tous les profils internes triés par date de création décroissante.
 
 Pour **créer un nouvel utilisateur DNPEC**, cliquez sur **Nouvel utilisateur** et renseignez les informations suivantes :
 
@@ -85,7 +73,7 @@ Pour **créer un nouvel utilisateur DNPEC**, cliquez sur **Nouvel utilisateur** 
     Entrez l'adresse email professionnelle. Elle servira d'identifiant de connexion.
   </Step>
   <Step title="Sélectionnez le rôle">
-    Choisissez parmi : `analyste`, `agent_saisie` ou `super_admin`. Ce choix détermine les permissions accordées (voir le [tableau de référence](/securite/roles-et-permissions)).
+    Choisissez parmi : **Analyste**, **Agent de saisie** ou **Super administrateur**. Ce choix détermine les permissions accordées (voir le [tableau de référence](/securite/roles-et-permissions)).
   </Step>
   <Step title="Ajoutez les informations optionnelles">
     Renseignez si nécessaire le **numéro de téléphone** et la **division** d'appartenance au sein de la DNPEC.
@@ -99,14 +87,14 @@ Pour **modifier** un compte existant (nom, rôle, division), cliquez sur la lign
 
 ## Journal d'audit
 
-La page `/direction/audit` enregistre de manière chronologique toutes les actions sensibles effectuées sur la plateforme. Ce journal est alimenté automatiquement lors de chaque opération d'insertion, de modification ou de suppression sur les tables clés : entreprises, campagnes, soumissions, formulaires, rapports et utilisateurs.
+Le journal d'audit enregistre de manière chronologique toutes les actions sensibles effectuées sur la plateforme. Il est alimenté automatiquement à chaque opération importante : inscriptions, modifications de campagnes, validations de soumissions, changements de formulaires, gestion des rapports et des utilisateurs.
 
 Chaque entrée du journal indique :
 - l'**acteur** (utilisateur ayant effectué l'action),
-- le **type d'action** (`insert`, `update`, `delete`),
-- la **table concernée** et l'identifiant de l'enregistrement,
+- le **type d'action** (création, modification ou suppression),
+- l'**objet concerné** et son identifiant,
 - la **date et l'heure** exactes de l'opération,
-- une **charge utile JSON** décrivant le contexte (événement, champs modifiés, raison).
+- le **contexte de l'action** (événement, champs modifiés, raison).
 
 Vous pouvez filtrer le journal par **type d'action**, par **utilisateur** et par **plage de dates**. Un export est disponible pour archivage ou transmission à des fins de contrôle interne.
 
@@ -117,5 +105,5 @@ Vous pouvez filtrer le journal par **type d'action**, par **utilisateur** et par
 </Warning>
 
 <Note>
-  L'accès à `/direction/parametres` et `/direction/audit` est strictement réservé au super administrateur. Toute tentative d'accès par un autre rôle entraîne une redirection automatique vers le tableau de bord.
+  L'accès aux paramètres système et au journal d'audit est strictement réservé au super administrateur. Toute tentative d'accès par un autre rôle entraîne une redirection automatique vers le tableau de bord.
 </Note>

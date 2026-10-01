@@ -21,7 +21,7 @@ Le module Analyses s'organise en quatre onglets complémentaires. Chacun répond
     Créez, révisez et publiez des notes de conjoncture sectorielles ou nationales. Le studio de rédaction vous permet d'éditer chaque section du rapport, de suivre le cycle de révision (brouillon → relu → publié) et de consulter l'historique des versions.
   </Card>
   <Card title="Assistant IA" icon="robot">
-    Générez automatiquement une note de conjoncture à partir d'un instantané des données validées, ou posez des questions analytiques en langage naturel. L'assistant s'appuie sur OpenAI et dispose d'un mode de repli par modèle de gabarit lorsque la clé API n'est pas configurée.
+    Générez automatiquement une note de conjoncture à partir des données validées de la période sélectionnée, ou posez des questions analytiques en langage naturel. L'assistant s'appuie sur les données disponibles sur la plateforme et adapte ses réponses au périmètre que vous avez filtré.
   </Card>
 </CardGroup>
 
@@ -82,8 +82,8 @@ Chaque anomalie est associée à l'un des trois niveaux de sévérité suivants 
 
 Pour chaque anomalie listée, vous disposez de deux actions :
 
-- **Traiter** : marque l'anomalie comme prise en charge (`acknowledged`) — vous avez vérifié et accepté la valeur.
-- **Ignorer** : écarte l'anomalie de la liste active (`dismissed`) — elle ne bloquera plus la publication.
+- **Traiter** : marque l'anomalie comme prise en charge — vous avez vérifié et accepté la valeur.
+- **Ignorer** : écarte l'anomalie de la liste active — elle ne bloquera plus la publication.
 
 <Warning>
   La publication d'un rapport est bloquée si des anomalies **critiques** non traitées existent sur la période couverte par ce rapport. Traitez ou ignorez toutes les anomalies critiques avant de soumettre le rapport à la publication.
@@ -114,11 +114,42 @@ Le moteur d'alertes analytiques analyse automatiquement les données de la péri
 
 Chaque alerte peut être :
 
-- **Acquittée** (`acknowledged`) : vous avez pris connaissance de l'alerte et l'intégrez dans votre analyse.
-- **Rejetée** (`dismissed`) : l'alerte ne correspond pas à une situation préoccupante pour la période concernée.
+- **Acquittée** : vous avez pris connaissance de l'alerte et l'intégrez dans votre analyse.
+- **Rejetée** : l'alerte ne correspond pas à une situation préoccupante pour la période concernée.
 
 Les alertes ouvertes sont synchronisées automatiquement à l'ouverture de la page Alertes. Vous pouvez forcer une resynchronisation en cliquant sur **Actualiser les alertes**.
 
 <Info>
   Les alertes analytiques sont aussi visibles sur le tableau de bord Direction via un bandeau d'alerte en haut de page. Cliquez sur le bandeau pour accéder directement au détail des alertes ouvertes.
 </Info>
+
+## Assistant IA
+
+L'onglet **Assistant IA** met à votre disposition deux fonctionnalités complémentaires pour accélérer la production de vos analyses de conjoncture.
+
+### Générer une note de conjoncture
+
+À partir des données validées correspondant aux filtres actifs (secteur, période, région), l'assistant génère automatiquement une note de conjoncture structurée en plusieurs sections : contexte macroéconomique, analyse sectorielle, points de vigilance et perspectives. Le ton et le niveau de formalité de la note peuvent être ajustés avant la génération.
+
+Une fois générée, la note peut être :
+
+- **Enregistrée en brouillon** pour être révisée manuellement dans le studio de rédaction de l'onglet Rapports.
+- **Téléchargée** directement au format Word ou PDF pour une diffusion immédiate.
+
+<Tip>
+  Pour obtenir une note de conjoncture nationale multi-sectorielle, sélectionnez « Tous les secteurs » dans le filtre Secteur avant de lancer la génération.
+</Tip>
+
+### Poser des questions analytiques
+
+Le mode conversation vous permet de poser des questions en langage naturel sur les données de la période sélectionnée. L'assistant répond en s'appuyant exclusivement sur les données validées disponibles sur la plateforme et cite les indicateurs utilisés dans sa réponse.
+
+Exemples de questions utiles :
+
+- *Quel secteur a enregistré la plus forte progression du chiffre d'affaires ce mois ?*
+- *Y a-t-il des incohérences entre les effectifs déclarés et le chiffre d'affaires dans le secteur des Mines ?*
+- *Compare les performances du secteur Commerce sur les trois derniers mois.*
+
+<Note>
+  Chaque conversation est rattachée au périmètre de données actif au moment de son ouverture. Si vous modifiez les filtres, démarrez une nouvelle conversation pour que l'assistant prenne en compte le nouveau périmètre.
+</Note>

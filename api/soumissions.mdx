@@ -13,7 +13,7 @@ Les endpoints `/submissions` gèrent l'intégralité du cycle de vie des déclar
 Retourne la liste paginée des soumissions visibles selon votre rôle et les filtres appliqués. Les entreprises ne voient que leurs propres soumissions ; les analystes et super admins accèdent à l'ensemble des déclarations.
 
 <Note>
-  La sécurité au niveau des lignes (Row Level Security) est appliquée automatiquement par la base de données. Une entreprise authentifiée ne peut jamais accéder aux soumissions d'une autre entreprise, même en manipulant les paramètres de requête.
+  Les contrôles d'accès sont appliqués automatiquement côté serveur. Une entreprise authentifiée ne peut jamais accéder aux soumissions d'une autre entreprise, même en manipulant les paramètres de requête.
 </Note>
 
 ### Paramètres de requête
